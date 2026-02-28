@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script>
+// GitHub Pages PWA fix — redirect to index with path
+var path = window.location.pathname;
+var search = window.location.search;
+var hash = window.location.hash;
+window.location.replace(
+  window.location.origin + '/shopcrm/' +
+  '?p=' + encodeURIComponent(path + search) + hash
+);
+</script>
+</head>
+<body>Loading Shop CRM...</body>
+</html>
