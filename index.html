@@ -795,7 +795,7 @@ function rInv(){
 // ════════ PDF / INVOICE ACTIONS ════════
 function calcs(inv){
   const qty=Number(inv.qty)||1,rate=Number(inv.rate)||0,disc=Number(inv.disc)||0,gst=Number(inv.gst)||0;
-  const sub=qty*rate,dAmt=sub*disc/100,after=sub-dAmt,gAmt=after*gst/100,total=after+gAmt;
+  const sub=qty*rate, dAmt=(sub*disc)/100, after=sub-dAmt, gAmt=(after*gst)/100, total=after+gAmt;
   return{qty,rate,disc,gst,sub,dAmt,after,gAmt,total};
 }
 
@@ -935,16 +935,21 @@ function sendIEM(){if(CI)iEM(CI);}
 
 function iWA(inv){
   const c=calcs(inv);
-  const msg='🧾 *Invoice - '+( inv.shop||SHOP())+'*\n\nNamaste *'+inv.name+'* Ji!\n\n📦 *'+inv.product+'*\nQty: '+c.qty+' x '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\n*TOTAL: '+fmt(c.total)+'*\n\n💳 '+( inv.mode||'Cash')+' | '+inv.status+'\nInvoice: '+(inv.invNo||'')+'\n\nShukriya! 🙏';
+  const msg='🧾 *Invoice - '+( inv.shop||SHOP())+'*\n\nNamaste *'+inv.name+'* Ji!\n\n📦 *'+inv.product+'*\nQty: '+c.qty+' x '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\n*TOTAL: '+fmt(c.total)+'*\n\n💳 '+( inv.mode||'Cash')+' | '+inv.status+'\nInvoice: '+(inv.invNo||'')+'\n\nShukriya! 🙏\n\nNote: Invoice PDF is attached below (if supported) or download from dashboard.';
   const mob=(inv.mobile||'').replace(/\D/g,'');
-  if(mob)window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
-  else{navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));}
+  if(mob) {
+    toast('Opening WhatsApp... Please attach the downloaded PDF manually if it doesn\'t auto-attach.', 4000);
+    setTimeout(() => window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank'), 1000);
+  } else {
+    navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));
+  }
 }
 function iEM(inv){
   const c=calcs(inv);
   const subj='Invoice '+(inv.invNo||'')+' - '+inv.product+' - '+(inv.shop||SHOP());
-  const body='Namaste '+inv.name+' Ji!\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: '+fmt(c.sub)+'\nDiscount: -'+fmt(c.dAmt)+'\nAfter Discount: '+fmt(c.after)+'\nGST Amount: +'+fmt(c.gAmt)+'\n\nTOTAL: '+fmt(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team';
-  openMailLink(inv.email||'',subj,body);
+  const body='Namaste '+inv.name+' Ji!\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: '+fmt(c.sub)+'\nDiscount: -'+fmt(c.dAmt)+'\nAfter Discount: '+fmt(c.after)+'\nGST Amount: +'+fmt(c.gAmt)+'\n\nTOTAL: '+fmt(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team\n\nNote: Please attach the downloaded Invoice PDF to this email.';
+  toast('Opening Email... Please attach the downloaded PDF manually.', 4000);
+  setTimeout(() => openMailLink(inv.email||'',subj,body), 1000);
 }
 
 // ════════ WA / EMAIL ════════
@@ -1007,14 +1012,32 @@ function bulkSend(type){
     const c=all[i];let opened=false;
     if((type==='both'||type==='wa')&&c.mobile){window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');opened=true;}
     if((type==='both'||type==='email')&&c.email){const a=document.createElement('a');a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));document.body.appendChild(a);a.click();document.body.removeChild(a);opened=true;}
-    if(opened){L=L.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);F=F.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);done++;sv();const el=document.getElementById('bssent');if(el)el.textContent=done;}
+    if(opened){
+      L=L.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+      F=F.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+      done++;sv();
+      const el=document.getElementById('bssent');
+      if(el)el.textContent=done;
+    }
     setTimeout(()=>next(i+1),2000);
   }
   toast('Bhejne shuru... '+all.length+' contacts',2000);next(0);
 }
 function resetBulk(){if(!confirm('Sab dubara pending karo?'))return;L=L.map(x=>Object.assign({},x,{sent:false}));F=F.map(x=>Object.assign({},x,{sent:false}));sv();rSend();toast('Reset ho gaya!');}
-function qWA(c){window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');}
-function qEM(c){const a=document.createElement('a');a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function qWA(c){
+  window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');
+  L=L.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+  F=F.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+  sv(); rSend();
+}
+function qEM(c){
+  const a=document.createElement('a');
+  a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  L=L.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+  F=F.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);
+  sv(); rSend();
+}
 
 // ════════ MSG TEMPLATES ════════
 function buildWA(c,t){
