@@ -243,7 +243,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
   <div class="ab">
     <div class="abl">
       <div class="abi">🏪</div>
-      <div><div class="abt">Shop<span>CRM</span></div><div class="abu" id="abu">...</div></div>
+      <div><div class="abt">Shop<span>CRM</span></div><div class="abu" id="abu">... v4</div></div>
     </div>
     <div class="abr">
       <div class="ib" id="admbtn" style="display:none" onclick="goP('admin')">⚙️</div>
@@ -1205,7 +1205,19 @@ function updN(){
 }
 
 // SW
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/shopcrm/sw.js').catch(()=>{}));}
+if('serviceWorker' in navigator){
+  // Clear ALL old caches and unregister old SW first
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    regs.forEach(function(r){ r.unregister(); });
+  });
+  caches.keys().then(function(names){
+    names.forEach(function(n){ caches.delete(n); });
+  });
+  // Register fresh
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/shopcrm/sw.js?v=4').catch(function(){});
+  });
+}
 </script>
 </body>
 </html>
