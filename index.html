@@ -839,138 +839,101 @@ function showPDF(inv){
 
 function dlPDF(){
   if(!CI){toast('Invoice select karo');return;}
-  var jl=window.jspdf;
-  if(!jl||!jl.jsPDF){toast('PDF load ho rahi hai, 3 sec baad try karo',3000);return;}
-
   var inv=CI;
-  var qty  = Number(inv.qty)  || 1;
-  var rate = Number(inv.rate) || 0;
-  var disc = Number(inv.disc) || 0;
-  var gst  = Number(inv.gst)  || 0;
-  var sub  = qty * rate;
-  var dAmt = sub * disc / 100;
-  var aftr = sub - dAmt;
-  var gAmt = aftr * gst / 100;
-  var tot  = aftr + gAmt;
-  var shop = String(inv.shop || SHOP());
+  var qty=Number(inv.qty)||1, rate=Number(inv.rate)||0;
+  var disc=Number(inv.disc)||0, gst=Number(inv.gst)||0;
+  var sub=qty*rate, dAmt=sub*disc/100, aftr=sub-dAmt;
+  var gAmt=aftr*gst/100, tot=aftr+gAmt;
+  var shop=inv.shop||SHOP();
+  // Use HTML entity for rupee &#8377; = ₹ renders perfectly in browser
+  var F=function(n){return Number(n||0).toLocaleString('en-IN');};
 
-  // CRITICAL: NO commas in numbers — jsPDF shows ' before comma-formatted numbers
-  // Plain decimal format only: 25000.00
-  function M(n){ return Number(n||0).toFixed(2); }
+  var pg='<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}'+
+  'body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;width:210mm;min-height:297mm;margin:0 auto;background:#fff}'+
+  '.hdr{background:#dc5014;padding:20px;text-align:center}'+
+  '.hdr h1{color:#fff;font-size:22px;font-weight:900}'+
+  '.hdr p{color:rgba(255,255,255,.85);font-size:11px;letter-spacing:2px;margin-top:4px}'+
+  '.meta{display:flex;justify-content:space-between;padding:10px 16px;background:#f8f5ff;border-bottom:1px solid #e0d5f5;font-size:12px}'+
+  '.bt{background:#ede8ff;border-left:4px solid #7c3aed;padding:14px 16px}'+
+  '.bt .lbl{font-size:9px;color:#7c3aed;font-weight:700;letter-spacing:1.5px;margin-bottom:5px}'+
+  '.bt .nm{font-size:17px;font-weight:900;color:#1a0a2e}'+
+  '.bt .inf{font-size:12px;color:#555;margin-top:3px}'+
+  'table{width:100%;border-collapse:collapse}'+
+  'thead tr{background:#14052a}'+
+  'th{padding:9px 13px;font-size:11px;color:#fff;font-weight:700;text-align:left}'+
+  'th.r{text-align:right}th.c{text-align:center}'+
+  'tbody tr{background:#faf7ff}'+
+  'td{padding:11px 13px;font-size:13px;border-bottom:1px solid #ede8ff}'+
+  'td.r{text-align:right;font-weight:700}td.c{text-align:center}'+
+  '.tsec{padding:14px 16px;display:flex;justify-content:flex-end}'+
+  '.ttbl{width:260px;border-collapse:collapse}'+
+  '.ttbl td{padding:5px 0;border:none;font-size:12px;background:none}'+
+  '.ttbl .tl{color:#666}.ttbl .tv{text-align:right;font-weight:700;color:#111}'+
+  '.ttbl .dl{color:#b91c1c}.ttbl .dv{color:#b91c1c;text-align:right;font-weight:700}'+
+  '.ttbl .gl{color:#92400e}.ttbl .gv{color:#92400e;text-align:right;font-weight:700}'+
+  '.totrow td{background:#dc5014!important;color:#fff!important;font-size:17px!important;font-weight:900!important;padding:10px 13px!important}'+
+  '.totrow td.tv{text-align:right!important}'+
+  '.pay{display:flex;gap:10px;padding:14px 16px;background:#f0fff4}'+
+  '.pb{flex:1;background:#fff;border:1px solid #d1fae5;border-radius:8px;padding:10px 13px}'+
+  '.pb .pl{font-size:9px;color:#666;font-weight:700;letter-spacing:1px;margin-bottom:4px}'+
+  '.pb .pv{font-size:14px;font-weight:900}'+
+  '.foot{background:#dc5014;padding:12px;text-align:center;color:#fff;font-size:11px}'+
+  '@media print{body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}'+
+  '</style></head><body>'+
+  '<div class="hdr"><h1>'+shop+'</h1><p>TAX INVOICE</p></div>'+
+  '<div class="meta">'+
+  '<span><b>Invoice No:</b> '+(inv.invNo||'INV-001')+'</span>'+
+  '<span><b>Date:</b> '+(inv.date||'')+'</span>'+
+  '</div>'+
+  '<div class="bt">'+
+  '<div class="lbl">BILL TO</div>'+
+  '<div class="nm">'+inv.name+'</div>'+
+  (inv.mobile?'<div class="inf">Mobile: '+inv.mobile+'</div>':'')+
+  (inv.email?'<div class="inf">Email: '+inv.email+'</div>':'')+
+  '</div>'+
+  '<table>'+
+  '<thead><tr><th>PRODUCT / ITEM</th><th class="c">QTY</th><th class="r">RATE</th><th class="c">DISC%</th><th class="r">AMOUNT</th></tr></thead>'+
+  '<tbody><tr>'+
+  '<td>'+inv.product+'</td>'+
+  '<td class="c">'+qty+'</td>'+
+  '<td class="r">&#8377;'+F(rate)+'</td>'+
+  '<td class="c">'+disc+'%</td>'+
+  '<td class="r">&#8377;'+F(sub)+'</td>'+
+  '</tr></tbody></table>'+
+  '<div class="tsec"><table class="ttbl">'+
+  '<tr><td class="tl">Subtotal</td><td class="tv">&#8377;'+F(sub)+'</td></tr>'+
+  '<tr><td class="dl">Discount ('+disc+'%)</td><td class="dv">- &#8377;'+F(dAmt)+'</td></tr>'+
+  '<tr><td class="tl">After Discount</td><td class="tv">&#8377;'+F(aftr)+'</td></tr>'+
+  '<tr><td class="gl">GST ('+gst+'%)</td><td class="gv">+ &#8377;'+F(gAmt)+'</td></tr>'+
+  '<tr class="totrow"><td>TOTAL</td><td class="tv">&#8377;'+F(tot)+'</td></tr>'+
+  '</table></div>'+
+  '<div class="pay">'+
+  '<div class="pb"><div class="pl">PAYMENT MODE</div><div class="pv" style="color:#065f46">'+(inv.mode||'Cash')+'</div></div>'+
+  '<div class="pb"><div class="pl">STATUS</div><div class="pv" style="color:'+(inv.status==='Paid'?'#065f46':'#991b1b')+'">'+inv.status+'</div></div>'+
+  '</div>'+
+  '<div class="foot">Shukriya aapke business ke liye! &nbsp;|&nbsp; Shop CRM Pro &nbsp;|&nbsp; '+new Date().toLocaleDateString('en-IN')+'</div>'+
+  '</body></html>';
 
-  var doc = new jl.jsPDF({unit:'mm', format:'a4'});
-  var PW=210, ML=15, MR=195, CW=180;
-
-  // HEADER
-  doc.setFillColor(220,80,20);
-  doc.rect(0,0,PW,36,'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(20);
-  doc.text(shop, PW/2, 14, {align:'center'});
-  doc.setFont('helvetica','normal'); doc.setFontSize(10);
-  doc.text('TAX INVOICE', PW/2, 23, {align:'center'});
-  doc.setFontSize(7.5);
-  doc.text('Thank you for your business!', PW/2, 30, {align:'center'});
-
-  // META
-  doc.setTextColor(40,40,40); doc.setFontSize(9);
-  doc.setFont('helvetica','bold'); doc.text('Invoice No:', ML, 43);
-  doc.setFont('helvetica','normal'); doc.text(String(inv.invNo||'INV-001'), ML+23, 43);
-  doc.setFont('helvetica','bold'); doc.text('Date:', 150, 43);
-  doc.setFont('helvetica','normal'); doc.text(String(inv.date||''), 160, 43);
-
-  // BILL TO
-  doc.setFillColor(240,235,255);
-  doc.rect(ML, 47, CW, 28, 'F');
-  doc.setFillColor(120,50,200);
-  doc.rect(ML, 47, 3, 28, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(100,50,200);
-  doc.text('BILL TO', ML+6, 53);
-  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(15,5,40);
-  doc.text(String(inv.name||''), ML+6, 62);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(60,60,60);
-  var by=69;
-  if(inv.mobile){ doc.text('Mobile: '+String(inv.mobile), ML+6, by); by+=6; }
-  if(inv.email) { doc.text('Email: ' +String(inv.email),  ML+6, by); }
-
-  // TABLE HEADER
-  var ty=81;
-  doc.setFillColor(15,5,40);
-  doc.rect(ML, ty, CW, 9, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-  doc.text('PRODUCT', ML+4, ty+6);
-  doc.text('QTY',    ML+104, ty+6, {align:'center'});
-  doc.text('RATE',   ML+130, ty+6, {align:'center'});
-  doc.text('DISC',   ML+153, ty+6, {align:'center'});
-  doc.text('AMOUNT', MR,     ty+6, {align:'right'});
-  ty+=9;
-
-  // TABLE ROW
-  doc.setFillColor(250,246,255);
-  doc.rect(ML, ty, CW, 12, 'F');
-  doc.setTextColor(20,20,20); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text(String(inv.product||'').substring(0,26), ML+4, ty+8);
-  doc.text(String(qty),        ML+104, ty+8, {align:'center'});
-  doc.text(M(rate),            ML+130, ty+8, {align:'center'});
-  doc.text(String(disc)+'%',   ML+153, ty+8, {align:'center'});
-  doc.setFont('helvetica','bold');
-  doc.text(M(sub), MR, ty+8, {align:'right'});
-  ty+=16;
-
-  // TOTALS
-  doc.setDrawColor(200,185,230); doc.setLineWidth(0.3);
-  doc.line(ML+85, ty-3, MR, ty-3);
-  ty+=2;
-
-  function TR(lbl, val, r, g, b){
-    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(80,80,80);
-    doc.text(lbl, MR-55, ty, {align:'right'});
-    doc.setFont('helvetica','bold');
-    if(r!==undefined) doc.setTextColor(r,g,b); else doc.setTextColor(20,20,20);
-    doc.text(val, MR, ty, {align:'right'});
-    ty+=7;
+  // Open new window → auto print → user saves as PDF
+  var w=window.open('','_blank');
+  if(w){
+    w.document.open();
+    w.document.write(pg);
+    w.document.close();
+    setTimeout(function(){ w.focus(); w.print(); },800);
+    toast('Print dialog mein "Save as PDF" choose karo!');
+  } else {
+    // Fallback: blob download
+    var blob=new Blob([pg],{type:'text/html;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.html';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('HTML file download hui - browser mein Print karo');
   }
-  TR('Subtotal:', M(sub));
-  TR('Discount ('+disc+'%):', '-'+M(dAmt), 200,40,40);
-  TR('After Discount:', M(aftr));
-  TR('GST ('+gst+'%):', '+'+M(gAmt), 180,120,0);
-  ty+=2;
-
-  // GRAND TOTAL — full width, centered, plain number NO comma
-  var tStr = 'TOTAL: ' + M(tot);
-  doc.setFillColor(220,80,20);
-  doc.rect(0, ty-4, PW, 17, 'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(17);
-  doc.text(tStr, PW/2, ty+8, {align:'center'});
-  ty+=23;
-
-  // PAYMENT
-  var hw=(CW-6)/2;
-  doc.setFillColor(230,255,240); doc.rect(ML, ty, hw, 14, 'F');
-  doc.setFillColor(255,248,225); doc.rect(ML+hw+6, ty, hw, 14, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(80,80,80);
-  doc.text('PAYMENT MODE', ML+3, ty+5);
-  doc.setFontSize(11); doc.setTextColor(10,90,50);
-  doc.text(String(inv.mode||'Cash'), ML+3, ty+12);
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(80,80,80);
-  doc.text('STATUS', ML+hw+9, ty+5);
-  doc.setFontSize(11);
-  var sc=inv.status==='Paid'?[10,160,90]:[200,30,30];
-  doc.setTextColor(sc[0],sc[1],sc[2]);
-  doc.text(String(inv.status), ML+hw+9, ty+12);
-
-  // FOOTER
-  doc.setFillColor(220,80,20);
-  doc.rect(0, 280, PW, 17, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text('Shukriya! Thank you for your business.', PW/2, 288, {align:'center'});
-  doc.setFontSize(7.5);
-  doc.text('Shop CRM Pro  |  '+new Date().toLocaleDateString('en-IN'), PW/2, 294, {align:'center'});
-
-  var fname=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.pdf';
-  doc.save(fname);
-  toast('PDF download: '+fname);
 }
 
 function sendIWA(){if(CI)iWA(CI);}
@@ -984,7 +947,7 @@ function iWA(inv){
   const mob=(inv.mobile||'').replace(/\D/g,'');
   if(mob){
     const url='https://wa.me/91'+mob+'?text='+encodeURIComponent(msg);
-    window.open(url,'_blank');
+    var _wa=document.createElement('a');_wa.href=url;_wa.target='_blank';_wa.rel='noopener';document.body.appendChild(_wa);_wa.click();document.body.removeChild(_wa);
     toast('WhatsApp khul raha hai...');
   } else {
     navigator.clipboard.writeText(msg).then(()=>toast('Number nahi hai — message copy hua!'));
@@ -1041,7 +1004,7 @@ function updWA(){
 function sendWA(){
   const msg=document.getElementById('wprev').textContent;
   const mob=(CC&&CC.mobile||'').replace(/\D/g,'');
-  if(mob)window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
+  if(mob){var _wb=document.createElement('a');_wb.href='https://wa.me/91'+mob+'?text='+encodeURIComponent(msg);_wb.target='_blank';_wb.rel='noopener';document.body.appendChild(_wb);_wb.click();document.body.removeChild(_wb);}
   else{navigator.clipboard.writeText(msg).then(()=>toast('📋 Copy hua!'));}
 }
 function openEMM(c){CC=c;updEM();openM('mo-em');}
@@ -1097,7 +1060,7 @@ function bulkSend(type){
     const ok=confirm('('+(i+1)+'/'+all.length+') '+'\n'+c.name+' ko bhejein?\n📱 '+c.mobile+(c.email?'\n📧 '+c.email:''));
     if(ok){
       if((type==='both'||type==='wa')&&c.mobile){
-        window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');
+        var _wd=document.createElement('a');_wd.href='https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer'));_wd.target='_blank';_wd.rel='noopener';document.body.appendChild(_wd);_wd.click();document.body.removeChild(_wd);
       }
       if((type==='both'||type==='email')&&c.email){
         const a=document.createElement('a');
@@ -1116,7 +1079,7 @@ function bulkSend(type){
   sendOne(0);
 }
 function resetBulk(){if(!confirm('Sab dubara pending karo?'))return;L=L.map(x=>Object.assign({},x,{sent:false}));F=F.map(x=>Object.assign({},x,{sent:false}));sv();rSend();toast('Reset ho gaya!');}
-function qWA(c){window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');}
+function qWA(c){var _wc=document.createElement('a');_wc.href='https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer'));_wc.target='_blank';_wc.rel='noopener';document.body.appendChild(_wc);_wc.click();document.body.removeChild(_wc);}
 function qEM(c){const a=document.createElement('a');a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));document.body.appendChild(a);a.click();document.body.removeChild(a);}
 
 // ════════ MSG TEMPLATES ════════
