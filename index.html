@@ -904,7 +904,7 @@ async function genPDF(inv) {
   doc.setFillColor(255,107,43);doc.rect(ML,ty-5,CW,13,'F');
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
   doc.text('GRAND TOTAL:',ML+5,ty+4.5);
-  doc.text(R(c.total),MR-5,ty+4.5,{align:'right'});
+  doc.text(R(c.total),MR-18,ty+4.5,{align:'right'});
   ty+=17;
 
   // PAYMENT
