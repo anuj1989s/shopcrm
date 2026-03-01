@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Cache Clear</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font-family:sans-serif;background:#0d0618;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}
+.box{background:#1a0f2e;border-radius:16px;padding:32px 24px;max-width:340px}
+h2{color:#ff6b2b;margin-bottom:12px}.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ff6b2b,#7c3aed);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;text-decoration:none}
+</style></head>
+<body>
+<div class="box">
+  <h2>🔄 Cache Clear</h2>
+  <p>Agar app purana dikh raha hai toh yeh button dabao</p>
+  <button class="btn" onclick="clearAll()">🗑️ Cache Clear Karo</button>
+  <a href="/shopcrm/" class="btn" style="margin-top:10px">🏠 App Kholo</a>
+  <p id="msg" style="margin-top:14px;font-size:13px;color:#a78bca"></p>
+</div>
+<script>
+async function clearAll(){
+  document.getElementById('msg').textContent='Clearing...';
+  try{
+    const regs=await navigator.serviceWorker.getRegistrations();
+    for(const r of regs) await r.unregister();
+    const keys=await caches.keys();
+    for(const k of keys) await caches.delete(k);
+    document.getElementById('msg').textContent='✅ Done! Ab app reload karo.';
+    setTimeout(()=>window.location.href='/shopcrm/',1500);
+  }catch(e){
+    document.getElementById('msg').textContent='Error: '+e.message;
+  }
+}
+</script>
+</body>
+</html>
