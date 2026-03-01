@@ -1,206 +1,1108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ShopCRM v2</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0d0618">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shop CRM">
 <link rel="manifest" href="manifest.json">
-
+<title>Shop CRM Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-
-body{
-font-family:Arial;
-margin:0;
-background:#f4f6f9;
-}
-
-header{
-background:#1f2937;
-color:white;
-padding:15px;
-font-size:20px;
-}
-
-.container{
-padding:20px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin-top:10px;
-}
-
-button{
-background:#2563eb;
-color:white;
-border:none;
-padding:10px;
-margin-top:10px;
-border-radius:6px;
-cursor:pointer;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-}
-
-td,th{
-border:1px solid #ddd;
-padding:8px;
-}
-
+:root{--bg:#0d0618;--bg2:#160d2a;--card:#1a0f2e;--card2:#231540;--border:rgba(255,255,255,0.08);--text:#f1e8ff;--text2:#a78bca;--text3:#6b5a8a;--accent:#ff6b2b;--violet:#7c3aed;--violet2:#a855f7;--green:#10b981;--green2:#34d399;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--wa:#25d366;--r:16px;--rs:10px}
+@media(prefers-color-scheme:light){:root{--bg:#f5f0ff;--bg2:#ede6ff;--card:#fff;--card2:#f0eaff;--border:rgba(0,0,0,0.08);--text:#1a0a2e;--text2:#5b3d8a;--text3:#9b7ec8}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 20% 0%,rgba(124,58,237,.12),transparent 60%),radial-gradient(ellipse 40% 30% at 80% 100%,rgba(255,107,43,.08),transparent 60%)}
+.scr{display:none;position:fixed;inset:0;z-index:500;overflow-y:auto}
+.scr.on{display:block}
+#sl{background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px}
+#sw{background:linear-gradient(135deg,#0d0618,#1a0a2e);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:32px}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;animation:orb 6s ease-in-out infinite alternate}
+.o1{width:280px;height:280px;background:rgba(124,58,237,.25);top:-60px;left:-60px}
+.o2{width:220px;height:220px;background:rgba(255,107,43,.18);bottom:-40px;right:-40px;animation-delay:-3s}
+@keyframes orb{to{transform:translateY(-30px) scale(1.06)}}
+.lbox{position:relative;z-index:1;width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px 24px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.lico{width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px;box-shadow:0 0 24px rgba(255,107,43,.4);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 24px rgba(255,107,43,.4)}50%{box-shadow:0 0 44px rgba(255,107,43,.7)}}
+.ltit{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;text-align:center;letter-spacing:-1px}
+.ltit span{color:var(--accent)}
+.lsub{font-size:13px;color:var(--text2);text-align:center;margin:4px 0 24px}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:var(--rs);background:var(--card2);border:1.5px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;margin-bottom:16px}
+.gbtn:active{transform:scale(.97)}
+.sep{text-align:center;color:var(--text3);font-size:12px;margin:0 0 14px;position:relative}
+.sep::before,.sep::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.sep::before{left:0}.sep::after{right:0}
+.fi{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:13px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;margin-bottom:10px;-webkit-appearance:none;transition:.2s}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,43,.15)}
+.fi::placeholder{color:var(--text3)}
+.lbtn{width:100%;padding:14px;border-radius:var(--rs);background:linear-gradient(135deg,var(--accent),#c0392b);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,43,.4);transition:.2s}
+.lbtn:active{transform:scale(.97)}
+.lft{text-align:center;font-size:12px;color:var(--text3);margin-top:16px}
+.lft a{color:var(--accent);cursor:pointer}
+/* WELCOME */
+.wem{font-size:60px;animation:bIn .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bIn{from{opacity:0;transform:scale(0)}to{opacity:1}}
+.wnm{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;margin:16px 0 8px;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fU .7s ease .3s both}
+.wmg{color:var(--text2);font-size:15px;animation:fU .7s ease .5s both}
+@keyframes fU{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.wdots{display:flex;gap:8px;justify-content:center;margin-top:28px;animation:fU .7s ease .7s both}
+.wd{width:10px;height:10px;border-radius:50%;animation:dp 1.2s ease infinite}
+.wd:nth-child(1){background:var(--accent)}.wd:nth-child(2){background:var(--violet2);animation-delay:.2s}.wd:nth-child(3){background:var(--green2);animation-delay:.4s}
+@keyframes dp{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.6);opacity:1}}
+/* APP */
+#sa{display:block;position:relative;z-index:1}
+.ab{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(13,6,24,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+@media(prefers-color-scheme:light){.ab{background:rgba(245,240,255,.93)}}
+.abl{display:flex;align-items:center;gap:10px}
+.abi{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;font-size:18px}
+.abt{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
+.abt span{color:var(--accent)}
+.abu{font-size:10px;color:var(--text2)}
+.abr{display:flex;gap:8px}
+.ib{width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:.2s}
+.ib:active{transform:scale(.88)}
+.bdg{position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+/* NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;background:rgba(22,13,42,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)}
+@media(prefers-color-scheme:light){.bnav{background:rgba(237,230,255,.97)}}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 2px;cursor:pointer;position:relative}
+.ni.on .nic{color:var(--accent);transform:scale(1.15)}
+.ni.on .nil{color:var(--accent);font-weight:600}
+.ni.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:linear-gradient(90deg,var(--accent),var(--violet2));border-radius:0 0 6px 6px}
+.nic{font-size:21px;transition:.2s;margin-bottom:2px}
+.nil{font-size:9px;color:var(--text2)}
+/* PAGES */
+.pg{display:none;animation:pgIn .25s ease}
+.pg.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+/* FAB */
+.fab{position:fixed;bottom:88px;right:18px;z-index:99;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 20px rgba(255,107,43,.5);cursor:pointer;border:none;transition:.2s}
+.fab:active{transform:scale(.88)}
+/* TOAST */
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 18px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:.3s;white-space:nowrap;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);display:none;align-items:flex-end}
+.mo.on{display:flex}
+.mb{width:100%;background:var(--bg2);border-radius:22px 22px 0 0;padding:22px 18px 36px;max-height:92vh;overflow-y:auto;animation:sU .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes sU{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mh{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.mt2{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;margin-bottom:18px}
+/* FORMS */
+.fg{margin-bottom:13px}
+.fl{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.fin,.fse,.fta{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:12px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:.2s;-webkit-appearance:none}
+.fin:focus,.fse:focus,.fta:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,107,43,.15)}
+.fta{resize:none;min-height:68px}
+.fse{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a78bca' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 18px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;border:none;cursor:pointer;transition:.2s;width:100%}
+.btn:active{transform:scale(.97)}
+.bp{background:linear-gradient(135deg,var(--accent),#c0392b);color:#fff;box-shadow:0 4px 14px rgba(255,107,43,.35)}
+.bs{background:var(--card2);color:var(--text);border:1px solid var(--border)}
+.bv{background:linear-gradient(135deg,var(--violet),#5b21b6);color:#fff}
+.bg{background:linear-gradient(135deg,var(--green),#059669);color:#fff}
+.bwa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
+.bem{background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff}
+.bsm{padding:8px 14px;font-size:13px;width:auto;border-radius:8px}
+.brow{display:flex;gap:10px;margin-top:13px}
+.brow .btn{flex:1}
+/* DASHBOARD */
+.dh{padding:18px 18px 12px;background:linear-gradient(180deg,rgba(124,58,237,.08),transparent)}
+.krow{display:flex;gap:10px;padding:0 18px 4px;overflow-x:auto;scrollbar-width:none}
+.krow::-webkit-scrollbar{display:none}
+.kc{flex-shrink:0;width:115px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px;position:relative;overflow:hidden;animation:kIn .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes kIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+.kc::after{content:'';position:absolute;bottom:-10px;right:-10px;width:55px;height:55px;border-radius:50%;opacity:.12}
+.kc.or::after{background:var(--accent)}.kc.vi::after{background:var(--violet2)}.kc.gr::after{background:var(--green)}.kc.bl::after{background:var(--blue)}
+.kico{font-size:20px;margin-bottom:7px}
+.kval{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;line-height:1}
+.kc.or .kval{color:var(--accent)}.kc.vi .kval{color:var(--violet2)}.kc.gr .kval{color:var(--green2)}.kc.bl .kval{color:var(--blue)}
+.klbl{font-size:10px;color:var(--text2);margin-top:4px}
+.sec{padding:14px 18px 0}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.st{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
+.sl{font-size:12px;color:var(--accent);cursor:pointer}
+.stages{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.stages::-webkit-scrollbar{display:none}
+.sp{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.sdot{width:7px;height:7px;border-radius:50%}
+.ai{display:flex;gap:11px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:11px;margin-bottom:7px;cursor:pointer;animation:cIn .3s ease both}
+@keyframes cIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ai:active{transform:scale(.98)}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+/* PAGE HEADER */
+.ph{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between}
+.pt{font-family:'Syne',sans-serif;font-weight:800;font-size:22px}
+.pc{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-size:12px;color:var(--text2)}
+.sb{margin:0 18px 11px;display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:0 13px}
+.sb input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px 0}
+.sb input::placeholder{color:var(--text3)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 18px 11px}
+.chip{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:.2s}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cl{padding:0 18px}
+/* CRM CARDS */
+.cc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;margin-bottom:9px;transition:.22s;position:relative;overflow:hidden;animation:cIn .3s ease both}
+.cc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+.cc.lead::before{background:var(--accent)}.cc.deal::before{background:var(--violet2)}.cc.fu::before{background:var(--yellow)}.cc.inv::before{background:var(--green)}
+.cc:active{transform:scale(.985)}
+.ct{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+.cn{font-weight:700;font-size:15px;margin-bottom:3px}
+.cs{font-size:12px;color:var(--text2)}
+.bdge{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bn{background:rgba(59,130,246,.2);color:#60a5fa}.bc{background:rgba(245,158,11,.2);color:#fbbf24}.bi{background:rgba(124,58,237,.2);color:#a78bfa}.bconv{background:rgba(16,185,129,.2);color:#34d399}.bl2{background:rgba(239,68,68,.2);color:#f87171}.bwon{background:rgba(16,185,129,.2);color:#34d399}.bpend{background:rgba(245,158,11,.2);color:#fbbf24}.bdone{background:rgba(16,185,129,.2);color:#34d399}.bpaid{background:rgba(16,185,129,.2);color:#34d399}.bpart{background:rgba(245,158,11,.2);color:#fbbf24}
+.cb{display:flex;align-items:center;justify-content:space-between}
+.acts{display:flex;gap:5px}
+.ab2{width:31px;height:31px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;border:none;transition:.2s}
+.ab2:active{transform:scale(.8)}
+.awa{background:rgba(37,211,102,.15);color:var(--wa)}.aem{background:rgba(234,67,53,.15);color:#ea4335}.aed{background:rgba(124,58,237,.15);color:var(--violet2)}.adl{background:rgba(239,68,68,.1);color:var(--red)}.apdf{background:rgba(59,130,246,.15);color:var(--blue)}
+.amnt{font-family:'Syne',sans-serif;font-weight:700;color:var(--green2)}
+/* INV SUMMARY */
+.isum{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 12px}
+.ibox{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center}
+.ibl{font-size:11px;color:var(--text2);margin-bottom:4px}
+.ibv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+/* SEND */
+.bhero{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(255,107,43,.1));border:1px solid var(--border);border-radius:var(--r);padding:18px;margin:18px;text-align:center}
+.bsts{display:flex;gap:9px;margin:0 18px 4px}
+.bst{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:11px;text-align:center}
+.bsn{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+.bsl{font-size:10px;color:var(--text2);margin-top:2px}
+.prog{height:5px;background:var(--card2);border-radius:3px;margin:8px 18px;overflow:hidden}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--violet2));transition:width .5s}
+.sopts{display:flex;flex-direction:column;gap:9px;padding:0 18px}
+.so{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;cursor:pointer;transition:.2s;animation:cIn .3s ease both}
+.so:active{transform:scale(.98)}
+.soico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.soin{flex:1}
+.sot{font-weight:700;font-size:15px;margin-bottom:2px}
+.sos{font-size:12px;color:var(--text2)}
+/* EMPTY */
+.emp{text-align:center;padding:44px 20px}
+.eico{font-size:50px;margin-bottom:13px;opacity:.6}
+.et{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:7px}
+.es{font-size:13px;color:var(--text2)}
+/* MESSAGES */
+.wmb{background:var(--card);border:1px solid rgba(37,211,102,.3);border-radius:var(--rs);padding:13px;font-size:13px;line-height:1.7;white-space:pre-wrap;margin-bottom:11px}
+.emb{background:var(--card);border:1px solid rgba(234,67,53,.3);border-radius:var(--rs);padding:13px;font-size:13px;line-height:1.7;white-space:pre-wrap;margin-bottom:11px}
+/* INVOICE PREVIEW */
+.ipw{background:#fff;border-radius:12px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+/* ADMIN */
+.acard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;margin:0 18px 12px;animation:cIn .3s ease both}
+.acat{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:13px}
+.ui{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
+.ui:last-child{border-bottom:none;padding-bottom:0}
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.pi{display:flex;align-items:center;gap:7px;background:var(--card2);border-radius:8px;padding:9px;cursor:pointer}
+.pi input{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0}
+/* OFFER CARD */
+.ocw{border-radius:var(--r);overflow:hidden;margin-bottom:14px;box-shadow:0 6px 28px rgba(0,0,0,.4)}
+/* CALC BOX */
+.icalc{background:var(--card2);border-radius:var(--rs);padding:13px;text-align:center;margin-bottom:12px}
+.icalc-l{font-size:11px;color:var(--text2);margin-bottom:4px}
+.icalc-v{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--green2)}
 </style>
-
 </head>
-
 <body>
 
-<header>
-ShopCRM v2 Dashboard
-</header>
-
-<div class="container">
-
-<div class="card">
-
-<h3>Create Invoice</h3>
-
-<input id="customer" placeholder="Customer Name">
-
-<input id="mobile" placeholder="Mobile">
-
-<input id="product" placeholder="Product">
-
-<input id="qty" placeholder="Qty">
-
-<input id="rate" placeholder="Rate">
-
-<input id="gst" placeholder="GST %">
-
-<button onclick="createInvoice()">Generate Invoice</button>
-
+<!-- LOGIN -->
+<div id="sl" class="scr on">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="lbox">
+    <div class="lico">🏪</div>
+    <div class="ltit">Shop<span>CRM</span> Pro</div>
+    <div class="lsub">Aapka Business Assistant</div>
+    <div class="gbtn" onclick="loginG()">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Google se Login Karo
+    </div>
+    <div class="sep">ya email se</div>
+    <input class="fi" id="le" type="email" placeholder="Email address">
+    <input class="fi" id="lp" type="password" placeholder="Password">
+    <button class="lbtn" onclick="loginE()">🔐 Login Karo</button>
+    <div class="lft">Pehli baar? <a onclick="doSignup()">Account banao</a></div>
+  </div>
 </div>
 
-
-<div class="card">
-
-<h3>Invoices</h3>
-
-<table id="invoiceTable">
-
-<tr>
-
-<th>Customer</th>
-<th>Product</th>
-<th>Total</th>
-
-</tr>
-
-</table>
-
+<!-- WELCOME -->
+<div id="sw" class="scr">
+  <div class="wem">👋</div>
+  <div class="wnm" id="wn">Namaste!</div>
+  <div class="wmg" id="wm">Shop CRM mein aapka swagat hai</div>
+  <div class="wdots"><div class="wd"></div><div class="wd"></div><div class="wd"></div></div>
 </div>
 
+<!-- APP -->
+<div id="sa" class="scr">
+  <div class="ab">
+    <div class="abl">
+      <div class="abi">🏪</div>
+      <div><div class="abt">Shop<span>CRM</span></div><div class="abu" id="abu">...</div></div>
+    </div>
+    <div class="abr">
+      <div class="ib" id="admbtn" style="display:none" onclick="goP('admin')">⚙️</div>
+      <div class="ib" onclick="goP('followup')">🔔<span class="bdg" id="fubdg" style="display:none">0</span></div>
+      <div class="ib" onclick="doOut()">🚪</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="pg on" id="pg-dashboard">
+    <div class="dh">
+      <div style="font-size:13px;color:var(--text2)">Namaste, <strong id="dhi" style="color:var(--accent)">ji</strong>! 🙏</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;letter-spacing:-1px" id="ddt"></div>
+    </div>
+    <div class="krow" id="krow"></div>
+    <div class="sec"><div class="sh"><div class="st">Pipeline</div><div class="sl" onclick="goP('pipeline')">Sab →</div></div><div class="stages" id="dpipe"></div></div>
+    <div class="sec"><div class="sh"><div class="st">Recent Leads</div><div class="sl" onclick="goP('leads')">Sab →</div></div><div id="dleads"></div></div>
+    <div class="sec" style="margin-bottom:20px"><div class="sh"><div class="st">Aaj Ke Follow-ups</div><div class="sl" onclick="goP('followup')">Sab →</div></div><div id="dfus"></div></div>
+  </div>
+
+  <!-- LEADS -->
+  <div class="pg" id="pg-leads">
+    <div class="ph"><div class="pt">👥 Leads</div><div class="pc" id="lcnt">0</div></div>
+    <div class="sb"><span>🔍</span><input id="lq" placeholder="Search..." oninput="rLeads()"></div>
+    <div class="chips">
+      <div class="chip on" onclick="sChip(this,'leads','all')">Sab</div>
+      <div class="chip" onclick="sChip(this,'leads','New Lead')">New</div>
+      <div class="chip" onclick="sChip(this,'leads','Contacted')">Contacted</div>
+      <div class="chip" onclick="sChip(this,'leads','Interested')">Interested</div>
+      <div class="chip" onclick="sChip(this,'leads','Converted')">Converted ✅</div>
+    </div>
+    <div class="cl" id="llist"></div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="pg" id="pg-pipeline">
+    <div class="ph"><div class="pt">💼 Pipeline</div><div class="pc" id="pcnt">0</div></div>
+    <div class="sb"><span>🔍</span><input id="pq" placeholder="Search..." oninput="rPipe()"></div>
+    <div class="chips">
+      <div class="chip on" onclick="sChip(this,'pipeline','all')">Sab</div>
+      <div class="chip" onclick="sChip(this,'pipeline','Lead')">Lead</div>
+      <div class="chip" onclick="sChip(this,'pipeline','Quotation')">Quotation</div>
+      <div class="chip" onclick="sChip(this,'pipeline','Negotiation')">Negotiation</div>
+      <div class="chip" onclick="sChip(this,'pipeline','Won')">Won 🏆</div>
+      <div class="chip" onclick="sChip(this,'pipeline','Lost')">Lost</div>
+    </div>
+    <div class="cl" id="plist"></div>
+  </div>
+
+  <!-- FOLLOWUP -->
+  <div class="pg" id="pg-followup">
+    <div class="ph"><div class="pt">🔔 Follow-up</div><div class="pc" id="fucnt">0</div></div>
+    <div class="sb"><span>🔍</span><input id="fuq" placeholder="Search..." oninput="rFU()"></div>
+    <div class="chips">
+      <div class="chip on" onclick="sChip(this,'fu','all')">Sab</div>
+      <div class="chip" onclick="sChip(this,'fu','Pending')">Pending</div>
+      <div class="chip" onclick="sChip(this,'fu','Done')">Done ✅</div>
+      <div class="chip" onclick="sChip(this,'fu','Overdue')">Overdue 🔴</div>
+    </div>
+    <div class="cl" id="fulist"></div>
+  </div>
+
+  <!-- INVOICE -->
+  <div class="pg" id="pg-invoice">
+    <div class="ph"><div class="pt">🧾 Invoice</div><div class="pc" id="icnt">0</div></div>
+    <div class="isum">
+      <div class="ibox"><div class="ibl">Paid</div><div class="ibv" id="ipaid" style="color:var(--green2)">₹0</div></div>
+      <div class="ibox"><div class="ibl">Pending</div><div class="ibv" id="ipend" style="color:var(--red)">₹0</div></div>
+    </div>
+    <div class="chips">
+      <div class="chip on" onclick="sChip(this,'inv','all')">Sab</div>
+      <div class="chip" onclick="sChip(this,'inv','Paid')">Paid ✅</div>
+      <div class="chip" onclick="sChip(this,'inv','Pending')">Pending ⏳</div>
+    </div>
+    <div class="cl" id="ilist"></div>
+  </div>
+
+  <!-- SEND -->
+  <div class="pg" id="pg-send">
+    <div class="bhero"><div style="font-size:34px;margin-bottom:7px">🚀</div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:19px">Bulk Send Center</div><div style="font-size:13px;color:var(--text2);margin-top:3px">WhatsApp + Email — Ek Click Mein</div></div>
+    <div class="bsts">
+      <div class="bst"><div class="bsn" id="bstot" style="color:var(--accent)">0</div><div class="bsl">Total</div></div>
+      <div class="bst"><div class="bsn" id="bssent" style="color:var(--green2)">0</div><div class="bsl">Bheje</div></div>
+      <div class="bst"><div class="bsn" id="bspend" style="color:var(--yellow)">0</div><div class="bsl">Baki</div></div>
+    </div>
+    <div class="prog"><div class="pf" id="bsprog" style="width:0%"></div></div>
+    <div class="sopts">
+      <div class="so" onclick="bulkSend('both')"><div class="soico" style="background:linear-gradient(135deg,#25d366,#ea4335)">📤</div><div class="soin"><div class="sot">WA + Email Dono</div><div class="sos">Sab pending ko bhejo</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+      <div class="so" onclick="bulkSend('wa')"><div class="soico" style="background:linear-gradient(135deg,#25d366,#128c7e)">💬</div><div class="soin"><div class="sot">Sirf WhatsApp</div><div class="sos">WA link khulega</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+      <div class="so" onclick="bulkSend('email')"><div class="soico" style="background:linear-gradient(135deg,#ea4335,#c5221f)">📧</div><div class="soin"><div class="sot">Sirf Email</div><div class="sos">Email app mein draft</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+      <div class="so" onclick="openOC()"><div class="soico" style="background:linear-gradient(135deg,var(--violet),var(--accent))">🎨</div><div class="soin"><div class="sot">Offer Card Banao</div><div class="sos">Screenshot karke share karo</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+      <div class="so" style="border-color:rgba(239,68,68,.3)" onclick="resetBulk()"><div class="soico" style="background:rgba(239,68,68,.12)">🔄</div><div class="soin"><div class="sot" style="color:var(--red)">Reset Pending</div><div class="sos">Sab dubara pending karo</div></div></div>
+    </div>
+    <div class="sec" style="margin-bottom:20px"><div class="sh"><div class="st">Customer List</div></div><div id="bklist"></div></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="pg" id="pg-admin">
+    <div class="ph"><div class="pt">⚙️ Admin Panel</div></div>
+    <div class="acard">
+      <div class="acat">➕ Naya User</div>
+      <div class="fg"><label class="fl">Naam</label><input class="fin" id="nun" placeholder="Ankit Kumar"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fin" id="nue" type="email" placeholder="ankit@shop.com"></div>
+      <div class="fg"><label class="fl">Role</label><select class="fse" id="nur"><option value="staff">Staff</option><option value="manager">Manager</option><option value="admin">Admin</option></select></div>
+      <button class="btn bp" onclick="addUser()">➕ Add User</button>
+    </div>
+    <div class="acard"><div class="acat">👥 Users</div><div id="ulist"></div></div>
+    <div class="acard" id="ppanel" style="display:none">
+      <div class="acat">🔐 Permissions — <span id="puname"></span></div>
+      <div class="pg2" id="pgrid"></div>
+      <button class="btn bp" style="margin-top:12px" onclick="savePerms()">💾 Save</button>
+    </div>
+  </div>
 </div>
 
+<div class="toast" id="toast"></div>
+<button class="fab" onclick="openAdd()">＋</button>
+<nav class="bnav">
+  <div class="ni on" id="ni-dashboard" onclick="goP('dashboard')"><div class="nic">🏠</div><div class="nil">Home</div></div>
+  <div class="ni" id="ni-leads" onclick="goP('leads')"><div class="nic">👥</div><div class="nil">Leads</div></div>
+  <div class="ni" id="ni-pipeline" onclick="goP('pipeline')"><div class="nic">💼</div><div class="nil">Pipeline</div></div>
+  <div class="ni" id="ni-followup" onclick="goP('followup')"><div class="nic">🔔</div><div class="nil">Follow-up</div></div>
+  <div class="ni" id="ni-invoice" onclick="goP('invoice')"><div class="nic">🧾</div><div class="nil">Invoice</div></div>
+  <div class="ni" id="ni-send" onclick="goP('send')"><div class="nic">🚀</div><div class="nil">Send</div></div>
+</nav>
+
+<!-- MODALS -->
+<div class="mo" id="mo-add"><div class="mb"><div class="mh"></div><div class="mt2">➕ Kya Add Karna Hai?</div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div class="so" onclick="closeM('mo-add');openLM()"><div class="soico" style="background:rgba(255,107,43,.15)">👥</div><div class="soin"><div class="sot">Naya Lead</div><div class="sos">Customer enquiry</div></div></div>
+    <div class="so" onclick="closeM('mo-add');openDM()"><div class="soico" style="background:rgba(124,58,237,.15)">💼</div><div class="soin"><div class="sot">Naya Deal</div><div class="sos">Pipeline deal</div></div></div>
+    <div class="so" onclick="closeM('mo-add');openFM()"><div class="soico" style="background:rgba(245,158,11,.15)">🔔</div><div class="soin"><div class="sot">Follow-up</div><div class="sos">Reminder set karo</div></div></div>
+    <div class="so" onclick="closeM('mo-add');openIM()"><div class="soico" style="background:rgba(16,185,129,.15)">🧾</div><div class="soin"><div class="sot">Naya Invoice</div><div class="sos">Bill banao</div></div></div>
+  </div>
+</div></div>
+
+<div class="mo" id="mo-lead"><div class="mb"><div class="mh"></div><div class="mt2" id="lmt">➕ Naya Lead</div>
+  <input type="hidden" id="leid">
+  <div class="fg"><label class="fl">Naam *</label><input class="fin" id="ln" placeholder="Rahul Sharma"></div>
+  <div class="fr"><div class="fg"><label class="fl">Mobile *</label><input class="fin" id="lmob" type="tel" placeholder="9876543210"></div><div class="fg"><label class="fl">Email</label><input class="fin" id="lem" type="email" placeholder="email@gmail.com"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">City</label><input class="fin" id="lct" placeholder="Delhi"></div><div class="fg"><label class="fl">Source</label><select class="fse" id="lsr"><option>Walk-in</option><option>WhatsApp</option><option>Referral</option><option>Facebook</option><option>Instagram</option><option>Google</option><option>Other</option></select></div></div>
+  <div class="fg"><label class="fl">Product *</label><input class="fin" id="lpd" placeholder="LED TV 55 inch"></div>
+  <div class="fr"><div class="fg"><label class="fl">Status</label><select class="fse" id="lst"><option>New Lead</option><option>Contacted</option><option>Interested</option><option>Not Interested</option><option>Converted</option></select></div><div class="fg"><label class="fl">Priority</label><select class="fse" id="lpri"><option>High</option><option>Medium</option><option>Low</option></select></div></div>
+  <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="lnt" placeholder="Koi notes..."></textarea></div>
+  <div class="brow"><button class="btn bs" onclick="closeM('mo-lead')">Cancel</button><button class="btn bp" onclick="saveLead()">💾 Save</button></div>
+</div></div>
+
+<div class="mo" id="mo-deal"><div class="mb"><div class="mh"></div><div class="mt2" id="dmt">➕ Naya Deal</div>
+  <input type="hidden" id="deid">
+  <div class="fg"><label class="fl">Customer *</label><input class="fin" id="dn" placeholder="Rahul Sharma"></div>
+  <div class="fg"><label class="fl">Product *</label><input class="fin" id="dpd" placeholder="LED TV 55 inch"></div>
+  <div class="fr"><div class="fg"><label class="fl">Value (₹) *</label><input class="fin" id="dv" type="number" placeholder="45000"></div><div class="fg"><label class="fl">Stage</label><select class="fse" id="dst"><option>Lead</option><option>Quotation</option><option>Negotiation</option><option>Won</option><option>Lost</option></select></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Probability %</label><input class="fin" id="dpr" type="number" placeholder="70"></div><div class="fg"><label class="fl">Close Date</label><input class="fin" id="dcl" type="date"></div></div>
+  <div class="fg"><label class="fl">Notes</label><textarea class="fta" id="dnt"></textarea></div>
+  <div class="brow"><button class="btn bs" onclick="closeM('mo-deal')">Cancel</button><button class="btn bv" onclick="saveDeal()">💾 Save</button></div>
+</div></div>
+
+<div class="mo" id="mo-fu"><div class="mb"><div class="mh"></div><div class="mt2" id="fmt2">➕ Follow-up</div>
+  <input type="hidden" id="feid">
+  <div class="fg"><label class="fl">Customer *</label><input class="fin" id="fn" placeholder="Rahul Sharma"></div>
+  <div class="fr"><div class="fg"><label class="fl">Mobile</label><input class="fin" id="fmob" type="tel"></div><div class="fg"><label class="fl">Date *</label><input class="fin" id="fdt" type="date"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Type</label><select class="fse" id="ftp"><option>Call</option><option>WhatsApp</option><option>Visit</option><option>Email</option><option>Meeting</option></select></div><div class="fg"><label class="fl">Status</label><select class="fse" id="fst"><option>Pending</option><option>Done</option><option>Rescheduled</option></select></div></div>
+  <div class="fg"><label class="fl">Summary</label><textarea class="fta" id="fsm" placeholder="Kya baat hui..."></textarea></div>
+  <div class="fg"><label class="fl">Next Action</label><input class="fin" id="fnx" placeholder="Agle step..."></div>
+  <div class="brow"><button class="btn bs" onclick="closeM('mo-fu')">Cancel</button><button class="btn bp" style="background:linear-gradient(135deg,#f59e0b,#d97706)" onclick="saveFU()">💾 Save</button></div>
+</div></div>
+
+<div class="mo" id="mo-inv"><div class="mb"><div class="mh"></div><div class="mt2" id="imt">➕ Naya Invoice</div>
+  <input type="hidden" id="ieid">
+  <div class="fg"><label class="fl">Customer *</label><input class="fin" id="inn" placeholder="Rahul Sharma"></div>
+  <div class="fr"><div class="fg"><label class="fl">Mobile</label><input class="fin" id="imob" type="tel"></div><div class="fg"><label class="fl">Email</label><input class="fin" id="iem" type="email"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Date</label><input class="fin" id="idt" type="date"></div><div class="fg"><label class="fl">Shop Name</label><input class="fin" id="isp" placeholder="Sharma Electronics"></div></div>
+  <div class="fg"><label class="fl">Product *</label><input class="fin" id="ipd" placeholder="LED TV 55 inch"></div>
+  <div class="fr"><div class="fg"><label class="fl">Qty</label><input class="fin" id="iqt" type="number" value="1" min="1" oninput="calcInv()"></div><div class="fg"><label class="fl">Rate (₹)</label><input class="fin" id="irt" type="number" placeholder="45000" oninput="calcInv()"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Discount %</label><input class="fin" id="idc" type="number" value="0" min="0" oninput="calcInv()"></div><div class="fg"><label class="fl">GST %</label><input class="fin" id="igs" type="number" value="18" min="0" oninput="calcInv()"></div></div>
+  <div class="icalc"><div class="icalc-l">Total Amount (Auto)</div><div class="icalc-v" id="itot">₹0</div></div>
+  <div class="fr"><div class="fg"><label class="fl">Payment</label><select class="fse" id="imd"><option>Cash</option><option>UPI</option><option>Card</option><option>EMI</option><option>Cheque</option></select></div><div class="fg"><label class="fl">Status</label><select class="fse" id="ist"><option>Paid</option><option>Pending</option><option>Partial</option></select></div></div>
+  <div class="brow"><button class="btn bs" onclick="closeM('mo-inv')">Cancel</button><button class="btn bg" onclick="saveInv()">💾 Save</button></div>
+</div></div>
+
+<div class="mo" id="mo-wa"><div class="mb"><div class="mh"></div><div class="mt2">💬 WhatsApp</div>
+  <div class="fg"><label class="fl">Template</label><select class="fse" id="wt" onchange="updWA()"><option value="offer">🎉 Offer</option><option value="newarr">🆕 New Arrival</option><option value="thanks">🙏 Thank You</option><option value="followup">🔔 Follow-up</option><option value="bday">🎂 Birthday</option><option value="fest">📢 Festival</option></select></div>
+  <div class="fg"><label class="fl">Discount %</label><input class="fin" id="wdisc" type="number" value="15" oninput="updWA()"></div>
+  <div class="wmb" id="wprev"></div>
+  <div class="brow"><button class="btn bs bsm" onclick="copyEl('wprev')" style="flex:1">📋 Copy</button><button class="btn bwa" onclick="sendWA()">💬 Open WA</button></div>
+</div></div>
+
+<div class="mo" id="mo-em"><div class="mb"><div class="mh"></div><div class="mt2">📧 Email Bhejo</div>
+  <div class="fg"><label class="fl">Template</label><select class="fse" id="et" onchange="updEM()"><option value="offer">🎉 Offer</option><option value="newarr">🆕 New Arrival</option><option value="thanks">🙏 Thank You</option><option value="followup">🔔 Follow-up</option><option value="bday">🎂 Birthday</option><option value="fest">📢 Festival</option></select></div>
+  <div class="fg"><label class="fl">Subject</label><input class="fin" id="esubj" readonly></div>
+  <div class="emb" id="eprev"></div>
+  <div style="font-size:11px;color:var(--text2);background:var(--card2);border-radius:8px;padding:9px;margin-bottom:11px">💡 "Email App" click karo — Gmail seedha khulega Android pe</div>
+  <div class="brow"><button class="btn bs bsm" onclick="copyEl('eprev')" style="flex:1">📋 Copy</button><button class="btn bem" onclick="openEApp()">📧 Email App</button></div>
+</div></div>
+
+<div class="mo" id="mo-pdf"><div class="mb"><div class="mh"></div><div class="mt2">🧾 Invoice</div>
+  <div class="ipw" id="iprev"></div>
+  <div class="brow"><button class="btn bs bsm" onclick="closeM('mo-pdf')" style="flex:1">Close</button><button class="btn bp bsm" onclick="dlPDF()" style="flex:1">📥 PDF Download</button></div>
+  <div style="display:flex;gap:9px;margin-top:9px">
+    <button class="btn bwa" onclick="sendIWA()">💬 WA pe Bhejo</button>
+    <button class="btn bem" onclick="sendIEM()">📧 Email Karo</button>
+  </div>
+</div></div>
+
+<div class="mo" id="mo-oc"><div class="mb"><div class="mh"></div><div class="mt2">🎨 Offer Card</div>
+  <div class="fr"><div class="fg"><label class="fl">Shop</label><input class="fin" id="ocsh" placeholder="Sharma Electronics" oninput="updOC()"></div><div class="fg"><label class="fl">Product</label><input class="fin" id="ocpr" placeholder="LED TV" oninput="updOC()"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">MRP (₹)</label><input class="fin" id="ocmr" type="number" oninput="updOC()"></div><div class="fg"><label class="fl">Offer Price</label><input class="fin" id="ocop" type="number" oninput="updOC()"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Discount %</label><input class="fin" id="ocdc" type="number" oninput="updOC()"></div><div class="fg"><label class="fl">Contact</label><input class="fin" id="occo" oninput="updOC()"></div></div>
+  <div class="fg"><label class="fl">Valid Till</label><input class="fin" id="ocvl" placeholder="28 Feb 2026" oninput="updOC()"></div>
+  <label class="fl" style="display:block;margin-bottom:8px">📸 Preview (Press & Hold → Screenshot)</label>
+  <div class="ocw" id="ocprev">
+    <div style="background:linear-gradient(135deg,#ff6b2b,#c0392b);padding:18px;text-align:center">
+      <div style="font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#fff" id="ocp-sh">Aapki Shop</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:3px">✨ SPECIAL OFFER ✨</div>
+    </div>
+    <div style="background:var(--card2);padding:18px">
+      <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;text-align:center;margin-bottom:13px" id="ocp-pr">Product</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:5px">
+        <span style="text-decoration:line-through;color:var(--text3);font-size:13px" id="ocp-mr">₹0</span>
+        <span style="background:var(--red);color:#fff;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700" id="ocp-dc">0% OFF</span>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--accent);text-align:center" id="ocp-op">₹0</div>
+      <div style="text-align:center;background:rgba(16,185,129,.15);color:var(--green2);padding:7px;border-radius:8px;font-size:12px;font-weight:600;margin:9px 0" id="ocp-sv">🎉 Bachate: ₹0</div>
+      <div style="display:flex;justify-content:space-around;margin:12px 0">
+        <div style="text-align:center;font-size:11px;color:var(--text2)"><span style="font-size:18px;display:block;margin-bottom:3px">✅</span>Quality</div>
+        <div style="text-align:center;font-size:11px;color:var(--text2)"><span style="font-size:18px;display:block;margin-bottom:3px">🚚</span>Delivery</div>
+        <div style="text-align:center;font-size:11px;color:var(--text2)"><span style="font-size:18px;display:block;margin-bottom:3px">💳</span>EMI</div>
+      </div>
+      <div style="background:var(--bg);border-radius:9px;padding:11px;text-align:center">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:3px">📞 Call Now</div>
+        <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--accent)" id="ocp-co">—</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:3px" id="ocp-vl">Valid Till: —</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn bp" onclick="closeM('mo-oc')">✅ Done</button>
+</div></div>
 
 <script>
+// ════════ DATA ════════
+const K=k=>'crm4_'+k;
+const GL=k=>{try{return JSON.parse(localStorage.getItem(K(k)))||[]}catch{return[]}};
+const SL=(k,v)=>localStorage.setItem(K(k),JSON.stringify(v));
 
-function calc(qty,rate,gst){
+let L=GL('leads'),D=GL('deals'),F=GL('fus'),I=GL('invs'),U=GL('users');
+const sv=()=>{SL('leads',L);SL('deals',D);SL('fus',F);SL('invs',I);SL('users',U)};
 
-qty=parseFloat(qty)||0
+let CU=null,CC=null,CI=null,PE=null;
+const CF={leads:'all',pipeline:'all',fu:'all',inv:'all'};
 
-rate=parseFloat(String(rate).replace(/,/g,''))||0
+// ════════ UTILS ════════
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const tod=()=>new Date().toISOString().slice(0,10);
+const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const fmtR=n=>'Rs.'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const avc=n=>{const c=['#ff6b2b','#7c3aed','#10b981','#3b82f6','#f59e0b','#ea4335','#06b6d4'];let h=0;for(let x of n||'')h=x.charCodeAt(0)+((h<<5)-h);return c[Math.abs(h)%c.length]};
+const ini=n=>(n||'').trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+const SHOP=()=>CU&&CU.shopName?CU.shopName:'Sharma Electronics';
+const EJ=o=>JSON.stringify(o).replace(/"/g,'&quot;');
 
-gst=parseFloat(gst)||0
+const BC={'New Lead':'bn','Contacted':'bc','Interested':'bi','Converted':'bconv','Not Interested':'bl2',
+  'Lead':'bn','Quotation':'bc','Negotiation':'bi','Won':'bwon','Lost':'bl2',
+  'Pending':'bpend','Done':'bdone','Paid':'bpaid','Partial':'bpart','Overdue':'bl2'};
 
-let sub=qty*rate
-let gstAmt=sub*gst/100
-let total=sub+gstAmt
+function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),dur)}
 
-return total
-
+// ════════ AUTH ════════
+function loginG(){
+  const name=prompt('Google Login:\nAapka poora naam:','');
+  if(!name||!name.trim())return;
+  const email=name.trim().toLowerCase().replace(/\s+/g,'.')+('@gmail.com');
+  doLogin({name:name.trim(),email,provider:'google'});
+}
+function loginE(){
+  const email=document.getElementById('le').value.trim();
+  const pass=document.getElementById('lp').value;
+  if(!email||!pass){toast('❌ Email aur password daalen!');return;}
+  U=GL('users');
+  const u=U.find(x=>x.email===email);
+  if(u)doLogin(u);
+  else if(U.length===0){const nu=mkU(email.split('@')[0],email,'admin','email');U.push(nu);sv();doLogin(nu);}
+  else toast('❌ User nahi mila. Admin se contact karo.');
+}
+function doSignup(){
+  const name=prompt('Aapka naam:','');if(!name)return;
+  const email=document.getElementById('le').value.trim()||prompt('Email:','');if(!email)return;
+  const pass=document.getElementById('lp').value||prompt('Password:','');if(!pass)return;
+  U=GL('users');
+  if(U.find(x=>x.email===email)){toast('❌ Email already exists!');return;}
+  const role=U.length===0?'admin':'staff';
+  const nu=mkU(name.trim(),email.trim(),role,'email');
+  U.push(nu);sv();doLogin(nu);
+}
+function mkU(name,email,role,provider){
+  return{id:uid(),name,email,role,provider,
+    permissions:{leads:true,pipeline:true,followup:true,invoice:role!=='staff',send:true,admin:role==='admin'}};
+}
+function doLogin(ud){
+  U=GL('users');
+  let u=U.find(x=>x.email===ud.email);
+  if(!u){u=mkU(ud.name||ud.email.split('@')[0],ud.email,ud.role||'staff',ud.provider||'email');U.push(u);sv();}
+  CU=u;
+  localStorage.setItem(K('sess'),JSON.stringify({uid:u.id}));
+  showWelcome(u);
+}
+function showWelcome(u){
+  document.getElementById('sl').classList.remove('on');
+  document.getElementById('sw').classList.add('on');
+  document.getElementById('wn').textContent='Namaste, '+u.name.split(' ')[0]+'!';
+  document.getElementById('wm').textContent='Shop CRM mein aapka swagat hai 🙏';
+  if('speechSynthesis' in window){
+    setTimeout(()=>{
+      const ut=new SpeechSynthesisUtterance('Namaste '+u.name.split(' ')[0]+' ji, Shop CRM mein swagat hai');
+      ut.lang='hi-IN';ut.rate=0.9;speechSynthesis.speak(ut);
+    },400);
+  }
+  setTimeout(()=>{document.getElementById('sw').classList.remove('on');launchApp(u);},2800);
+}
+function launchApp(u){
+  L=GL('leads');D=GL('deals');F=GL('fus');I=GL('invs');U=GL('users');
+  document.getElementById('sa').classList.add('on');
+  document.getElementById('abu').textContent=u.name+' ('+u.role+')';
+  document.getElementById('dhi').textContent=u.name.split(' ')[0];
+  if(u.role==='admin')document.getElementById('admbtn').style.display='flex';
+  applyPerms(u);goP('dashboard');
+}
+function applyPerms(u){
+  const p=u.permissions||{};
+  ['leads','pipeline','followup','invoice','send'].forEach(pg=>{
+    const el=document.getElementById('ni-'+pg);
+    if(el)el.style.display=p[pg]===false?'none':'flex';
+  });
+}
+function doOut(){
+  if(!confirm('Logout karna chahte ho?'))return;
+  CU=null;localStorage.setItem(K('sess'),'null');
+  document.getElementById('sa').classList.remove('on');
+  document.getElementById('sl').classList.add('on');
+  document.getElementById('le').value='';document.getElementById('lp').value='';
 }
 
+// AUTO LOGIN
+(function(){
+  try{
+    const s=localStorage.getItem(K('sess'));
+    if(!s||s==='null')return;
+    const sess=JSON.parse(s);if(!sess||!sess.uid)return;
+    U=GL('users');const u=U.find(x=>x.id===sess.uid);
+    if(u){CU=u;document.getElementById('sl').classList.remove('on');setTimeout(()=>launchApp(u),60);}
+  }catch(e){}
+})();
 
-function createInvoice(){
-
-let c=document.getElementById("customer").value
-let m=document.getElementById("mobile").value
-let p=document.getElementById("product").value
-let q=document.getElementById("qty").value
-let r=document.getElementById("rate").value
-let g=document.getElementById("gst").value
-
-let total=calc(q,r,g)
-
-let inv={
-customer:c,
-mobile:m,
-product:p,
-total:total
+// ════════ NAVIGATION ════════
+let curP='dashboard';
+function goP(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  const pg=document.getElementById('pg-'+p);if(pg)pg.classList.add('on');
+  const ni=document.getElementById('ni-'+p);if(ni)ni.classList.add('on');
+  curP=p;rPg(p);window.scrollTo(0,0);
+}
+function rPg(p){
+  if(p==='dashboard')rDash();
+  else if(p==='leads')rLeads();
+  else if(p==='pipeline')rPipe();
+  else if(p==='followup')rFU();
+  else if(p==='invoice')rInv();
+  else if(p==='send')rSend();
+  else if(p==='admin')rAdmin();
 }
 
-let data=JSON.parse(localStorage.getItem("invoices")||"[]")
+// ════════ MODALS ════════
+const openM=id=>document.getElementById(id).classList.add('on');
+const closeM=id=>document.getElementById(id).classList.remove('on');
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on')}));
+const openAdd=()=>openM('mo-add');
+const openOC=()=>{updOC();openM('mo-oc')};
 
-data.push(inv)
-
-localStorage.setItem("invoices",JSON.stringify(data))
-
-loadInvoices()
-
-if(m){
-
-window.open("https://wa.me/"+m+"?text=Your Invoice Amount ₹"+total)
-
+function openLM(d=null){
+  document.getElementById('leid').value=d?d.id:'';
+  document.getElementById('lmt').textContent=d?'✏️ Lead Edit':'➕ Naya Lead';
+  [['ln',d&&d.name],['lmob',d&&d.mobile],['lem',d&&d.email],['lct',d&&d.city],['lpd',d&&d.product],['lsr',d&&d.source],['lst',d&&d.status],['lpri',d&&d.priority],['lnt',d&&d.notes]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||'';});
+  openM('mo-lead');
+}
+function openDM(d=null){
+  document.getElementById('deid').value=d?d.id:'';
+  document.getElementById('dmt').textContent=d?'✏️ Deal Edit':'➕ Naya Deal';
+  [['dn',d&&d.name],['dpd',d&&d.product],['dv',d&&d.value],['dst',d&&d.stage],['dpr',d&&d.prob],['dcl',d&&d.close],['dnt',d&&d.notes]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||'';});
+  openM('mo-deal');
+}
+function openFM(d=null){
+  document.getElementById('feid').value=d?d.id:'';
+  document.getElementById('fmt2').textContent=d?'✏️ Follow-up Edit':'➕ Follow-up';
+  document.getElementById('fdt').value=d?d.date:tod();
+  [['fn',d&&d.name],['fmob',d&&d.mobile],['ftp',d&&d.type],['fst',d&&d.status],['fsm',d&&d.summary],['fnx',d&&d.next]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v||'';});
+  openM('mo-fu');
+}
+function openIM(d=null){
+  document.getElementById('ieid').value=d?d.id:'';
+  document.getElementById('imt').textContent=d?'✏️ Invoice Edit':'➕ Naya Invoice';
+  document.getElementById('idt').value=d?d.date:tod();
+  document.getElementById('isp').value=d?d.shop:SHOP();
+  [['inn',d&&d.name],['imob',d&&d.mobile],['iem',d&&d.email],['ipd',d&&d.product],['iqt',d?d.qty:1],['irt',d&&d.rate],['idc',d?d.disc:0],['igs',d?d.gst:18],['imd',d&&d.mode],['ist',d&&d.status]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v!==null&&v!==undefined?v:'';});
+  calcInv();openM('mo-inv');
 }
 
+// ════════ SAVE ════════
+function saveLead(){
+  const name=document.getElementById('ln').value.trim();
+  if(!name){toast('❌ Naam zaroori!');return;}
+  const id=document.getElementById('leid').value;
+  const obj={id:id||uid(),name,mobile:document.getElementById('lmob').value.trim(),email:document.getElementById('lem').value.trim(),city:document.getElementById('lct').value.trim(),product:document.getElementById('lpd').value.trim(),source:document.getElementById('lsr').value,status:document.getElementById('lst').value,priority:document.getElementById('lpri').value,notes:document.getElementById('lnt').value.trim(),date:tod(),sent:false};
+  L=id?L.map(x=>x.id===id?obj:x):[obj,...L];
+  sv();closeM('mo-lead');rPg(curP);toast('✅ Lead saved!');
+}
+function saveDeal(){
+  const name=document.getElementById('dn').value.trim();
+  if(!name){toast('❌ Naam zaroori!');return;}
+  const id=document.getElementById('deid').value;
+  const obj={id:id||uid(),name,product:document.getElementById('dpd').value.trim(),value:Number(document.getElementById('dv').value)||0,stage:document.getElementById('dst').value,prob:Number(document.getElementById('dpr').value)||50,close:document.getElementById('dcl').value,notes:document.getElementById('dnt').value.trim(),date:tod()};
+  D=id?D.map(x=>x.id===id?obj:x):[obj,...D];
+  sv();closeM('mo-deal');rPg(curP);toast('✅ Deal saved!');
+}
+function saveFU(){
+  const name=document.getElementById('fn').value.trim();
+  if(!name){toast('❌ Naam zaroori!');return;}
+  const id=document.getElementById('feid').value;
+  const obj={id:id||uid(),name,mobile:document.getElementById('fmob').value.trim(),date:document.getElementById('fdt').value,type:document.getElementById('ftp').value,status:document.getElementById('fst').value,summary:document.getElementById('fsm').value.trim(),next:document.getElementById('fnx').value.trim(),created:tod()};
+  F=id?F.map(x=>x.id===id?obj:x):[obj,...F];
+  sv();closeM('mo-fu');rPg(curP);updN();toast('✅ Follow-up saved!');
+}
+function saveInv(){
+  const name=document.getElementById('inn').value.trim();
+  if(!name){toast('❌ Naam zaroori!');return;}
+  const id=document.getElementById('ieid').value;
+  const qty=Number(document.getElementById('iqt').value)||1;
+  const rate=Number(document.getElementById('irt').value)||0;
+  const disc=Number(document.getElementById('idc').value)||0;
+  const gst=Number(document.getElementById('igs').value)||0;
+  const sub=qty*rate, dAmt=sub*disc/100, after=sub-dAmt, gAmt=after*gst/100, amount=after+gAmt;
+  const ex=id?I.find(x=>x.id===id):null;
+  const obj={id:id||uid(),name,mobile:document.getElementById('imob').value.trim(),email:document.getElementById('iem').value.trim(),date:document.getElementById('idt').value,shop:document.getElementById('isp').value||SHOP(),product:document.getElementById('ipd').value.trim(),qty,rate,disc,gst,amount,mode:document.getElementById('imd').value,status:document.getElementById('ist').value,invNo:ex?ex.invNo:'INV-'+String(I.length+1).padStart(3,'0')};
+  I=id?I.map(x=>x.id===id?obj:x):[obj,...I];
+  sv();closeM('mo-inv');rPg(curP);toast('✅ Invoice saved!');
+}
+function calcInv(){
+  const q=Number(document.getElementById('iqt').value)||1;
+  const r=Number(document.getElementById('irt').value)||0;
+  const d=Number(document.getElementById('idc').value)||0;
+  const g=Number(document.getElementById('igs').value)||0;
+  const el=document.getElementById('itot');
+  if(el)el.textContent=fmt(q*r*(1-d/100)*(1+g/100));
 }
 
+// ════════ DELETE ════════
+function delL(id,e){e.stopPropagation();if(!confirm('Delete?'))return;L=L.filter(x=>x.id!==id);sv();rPg(curP);toast('🗑️ Deleted');}
+function delD(id,e){e.stopPropagation();if(!confirm('Delete?'))return;D=D.filter(x=>x.id!==id);sv();rPg(curP);toast('🗑️ Deleted');}
+function delF(id,e){e.stopPropagation();if(!confirm('Delete?'))return;F=F.filter(x=>x.id!==id);sv();rPg(curP);updN();toast('🗑️ Deleted');}
+function delI(id,e){e.stopPropagation();if(!confirm('Delete?'))return;I=I.filter(x=>x.id!==id);sv();rPg(curP);toast('🗑️ Deleted');}
 
-function loadInvoices(){
-
-let table=document.getElementById("invoiceTable")
-
-table.innerHTML="<tr><th>Customer</th><th>Product</th><th>Total</th></tr>"
-
-let data=JSON.parse(localStorage.getItem("invoices")||"[]")
-
-data.forEach(i=>{
-
-table.innerHTML+=`<tr>
-
-<td>${i.customer}</td>
-
-<td>${i.product}</td>
-
-<td>₹${i.total}</td>
-
-</tr>`
-
-})
-
+// ════════ CHIPS ════════
+function sChip(el,type,val){
+  el.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');CF[type]=val;rPg(curP);
 }
 
+// ════════ DASHBOARD ════════
+function rDash(){
+  document.getElementById('ddt').textContent=new Date().toLocaleDateString('hi-IN',{weekday:'short',day:'numeric',month:'long'});
+  const rev=I.filter(x=>x.status==='Paid').reduce((s,x)=>s+x.amount,0);
+  const fuP=F.filter(x=>x.status==='Pending').length;
+  const actD=D.filter(x=>!['Won','Lost'].includes(x.stage)).length;
+  document.getElementById('krow').innerHTML=[
+    {cls:'or',ico:'👥',val:L.length,lbl:'Leads'},
+    {cls:'vi',ico:'💼',val:actD,lbl:'Active Deals'},
+    {cls:'gr',ico:'💰',val:rev>=1000?'₹'+(rev/1000).toFixed(1)+'K':fmt(rev),lbl:'Revenue'},
+    {cls:'bl',ico:'⏰',val:fuP,lbl:'Follow-ups'},
+  ].map((k,i)=>`<div class="kc ${k.cls}" style="animation-delay:${i*.07}s"><div class="kico">${k.ico}</div><div class="kval">${k.val}</div><div class="klbl">${k.lbl}</div></div>`).join('');
 
-loadInvoices()
+  document.getElementById('dpipe').innerHTML=[['Lead','#3b82f6'],['Quotation','#f59e0b'],['Negotiation','#a855f7'],['Won','#10b981'],['Lost','#ef4444']].map(([s,c])=>`<div class="sp"><div class="sdot" style="background:${c}"></div>${s}: <strong>${D.filter(x=>x.stage===s).length}</strong></div>`).join('');
 
+  const dl=document.getElementById('dleads');
+  dl.innerHTML=L.length?L.slice(0,4).map((l,i)=>`<div class="ai" style="animation-delay:${i*.05}s" onclick="openLM(${EJ(l)})"><div class="av" style="background:${avc(l.name)}">${ini(l.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.name}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${l.product||'—'} • ${l.source||''}</div></div><span class="bdge ${BC[l.status]||'bn'}">${l.status}</span></div>`).join(''):'<div class="emp"><div class="eico">👥</div><div class="et">Koi Lead Nahi</div><div class="es">+ se customer add karo</div></div>';
+
+  const tf=F.filter(x=>x.date===tod()&&x.status==='Pending');
+  document.getElementById('dfus').innerHTML=tf.length?tf.map(f=>`<div class="ai"><div class="av" style="background:${avc(f.name)}">${ini(f.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${f.name}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${f.type} • ${f.next||''}</div></div><button class="ab2 awa" onclick="openWAM(${EJ(f)})">💬</button></div>`).join(''):'<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">🎉 Aaj koi follow-up nahi!</div>';
+}
+
+// ════════ LEADS ════════
+function rLeads(){
+  const q=(document.getElementById('lq').value||'').toLowerCase();
+  const data=L.filter(l=>(CF.leads==='all'||l.status===CF.leads)&&(!q||(l.name+l.product+l.city).toLowerCase().includes(q)));
+  document.getElementById('lcnt').textContent=data.length;
+  document.getElementById('llist').innerHTML=data.length?data.map((l,i)=>`
+    <div class="cc lead" style="animation-delay:${i*.04}s">
+      <div class="ct"><div><div class="cn">${l.name}</div><div class="cs">📱 ${l.mobile||'—'} • 📦 ${l.product||'—'}</div><div class="cs" style="margin-top:2px">📍 ${l.city||'—'} • 🔗 ${l.source||'—'}</div></div><span class="bdge ${BC[l.status]||'bn'}">${l.status}</span></div>
+      ${l.notes?`<div style="font-size:12px;color:var(--text2);background:var(--card2);border-radius:8px;padding:7px;margin-bottom:8px">${l.notes}</div>`:''}
+      <div class="cb"><div style="font-size:11px;color:var(--text3)">${l.priority==='High'?'🔴':l.priority==='Medium'?'🟡':'🟢'} ${l.priority||'Low'}</div>
+      <div class="acts"><button class="ab2 awa" onclick="openWAM(${EJ(l)})">💬</button><button class="ab2 aem" onclick="openEMM(${EJ(l)})">📧</button><button class="ab2 aed" onclick="openLM(${EJ(l)})">✏️</button><button class="ab2 adl" onclick="delL('${l.id}',event)">🗑️</button></div></div>
+    </div>`).join(''):'<div class="emp"><div class="eico">👥</div><div class="et">Koi Lead Nahi</div></div>';
+}
+
+// ════════ PIPELINE ════════
+function rPipe(){
+  const q=(document.getElementById('pq').value||'').toLowerCase();
+  const data=D.filter(d=>(CF.pipeline==='all'||d.stage===CF.pipeline)&&(!q||(d.name+d.product).toLowerCase().includes(q)));
+  document.getElementById('pcnt').textContent=data.length;
+  document.getElementById('plist').innerHTML=data.length?data.map((d,i)=>`
+    <div class="cc deal" style="animation-delay:${i*.04}s">
+      <div class="ct"><div><div class="cn">${d.name}</div><div class="cs">📦 ${d.product||'—'}</div><div class="cs" style="margin-top:2px">🗓️ ${d.close||'—'} • 📊 ${d.prob||0}%</div></div><span class="bdge ${BC[d.stage]||'bn'}">${d.stage}</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div class="amnt" style="font-size:20px">${fmt(d.value)}</div><div style="font-size:12px;color:var(--text2)">Wtd: ${fmt(d.value*(d.prob||50)/100)}</div></div>
+      <div class="cb"><div></div><div class="acts"><button class="ab2 aed" onclick="openDM(${EJ(d)})">✏️</button><button class="ab2 adl" onclick="delD('${d.id}',event)">🗑️</button></div></div>
+    </div>`).join(''):'<div class="emp"><div class="eico">💼</div><div class="et">Koi Deal Nahi</div></div>';
+}
+
+// ════════ FOLLOWUP ════════
+function rFU(){
+  const q=(document.getElementById('fuq').value||'').toLowerCase();
+  const data=F.filter(f=>{const ov=f.date<tod()&&f.status==='Pending';if(CF.fu==='Overdue')return ov;if(CF.fu==='all')return true;return f.status===CF.fu;}).filter(f=>!q||(f.name+f.summary+f.next).toLowerCase().includes(q));
+  document.getElementById('fucnt').textContent=F.filter(x=>x.status==='Pending').length+' pending';
+  document.getElementById('fulist').innerHTML=data.length?data.map((f,i)=>{
+    const ov=f.date<tod()&&f.status==='Pending';
+    return`<div class="cc fu" style="animation-delay:${i*.04}s;${ov?'border-color:rgba(239,68,68,.4)':''}">
+      <div class="ct"><div><div class="cn">${f.name}</div><div class="cs">📱 ${f.mobile||'—'} • ${f.type||'Call'}</div><div class="cs" style="margin-top:2px;${ov?'color:var(--red)':''}">🗓️ ${f.date||'—'} ${ov?'<strong>(OVERDUE)</strong>':''}</div></div><span class="bdge ${ov?'bl2':BC[f.status]||'bpend'}">${ov?'Overdue':f.status}</span></div>
+      ${f.summary?`<div style="font-size:12px;color:var(--text2);background:var(--card2);border-radius:8px;padding:7px;margin-bottom:7px">💬 ${f.summary}</div>`:''}
+      ${f.next?`<div style="font-size:12px;color:var(--accent);margin-bottom:7px">→ ${f.next}</div>`:''}
+      <div class="cb"><div>${f.status==='Pending'?`<button class="btn bg bsm" onclick="markDone('${f.id}')">✅ Done</button>`:''}</div><div class="acts"><button class="ab2 awa" onclick="openWAM(${EJ(f)})">💬</button><button class="ab2 aed" onclick="openFM(${EJ(f)})">✏️</button><button class="ab2 adl" onclick="delF('${f.id}',event)">🗑️</button></div></div>
+    </div>`;}).join(''):'<div class="emp"><div class="eico">🔔</div><div class="et">Koi Follow-up Nahi</div></div>';
+}
+function markDone(id){F=F.map(f=>f.id===id?Object.assign({},f,{status:'Done'}):f);sv();rFU();updN();toast('✅ Done!');}
+
+// ════════ INVOICE ════════
+function rInv(){
+  const data=I.filter(x=>CF.inv==='all'||x.status===CF.inv);
+  const paid=I.filter(x=>x.status==='Paid').reduce((s,x)=>s+x.amount,0);
+  const pend=I.filter(x=>x.status==='Pending').reduce((s,x)=>s+x.amount,0);
+  document.getElementById('ipaid').textContent=fmt(paid);
+  document.getElementById('ipend').textContent=fmt(pend);
+  document.getElementById('icnt').textContent=I.length;
+  document.getElementById('ilist').innerHTML=data.length?data.map((inv,i)=>`
+    <div class="cc inv" style="animation-delay:${i*.04}s">
+      <div class="ct"><div><div class="cn">${inv.name}</div><div class="cs">${inv.invNo||''} • ${inv.date||''}</div><div class="cs" style="margin-top:2px">📦 ${inv.product||'—'} (${inv.qty||1}x${fmt(inv.rate)})</div></div><span class="bdge ${BC[inv.status]||'bpend'}">${inv.status}</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px"><div class="amnt" style="font-size:22px">${fmt(inv.amount)}</div><div style="font-size:12px;color:var(--text2)">💳 ${inv.mode||'Cash'}</div></div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:9px">Sub: ${fmt(inv.qty*inv.rate)} | Disc: ${inv.disc||0}% | GST: ${inv.gst||0}%</div>
+      <div class="cb"><div></div><div class="acts"><button class="ab2 awa" onclick="iWA(${EJ(inv)})">💬</button><button class="ab2 aem" onclick="iEM(${EJ(inv)})">📧</button><button class="ab2 apdf" onclick="showPDF(${EJ(inv)})">📄</button><button class="ab2 aed" onclick="openIM(${EJ(inv)})">✏️</button><button class="ab2 adl" onclick="delI('${inv.id}',event)">🗑️</button></div></div>
+    </div>`).join(''):'<div class="emp"><div class="eico">🧾</div><div class="et">Koi Invoice Nahi</div><div class="es">+ se bill banao</div></div>';
+}
+
+// ════════ PDF / INVOICE ACTIONS ════════
+function calcs(inv){
+  const qty=Number(inv.qty)||1,rate=Number(inv.rate)||0,disc=Number(inv.disc)||0,gst=Number(inv.gst)||0;
+  const sub=qty*rate,dAmt=sub*disc/100,after=sub-dAmt,gAmt=after*gst/100,total=after+gAmt;
+  return{qty,rate,disc,gst,sub,dAmt,after,gAmt,total};
+}
+
+function showPDF(inv){
+  CI=inv;
+  const c=calcs(inv),shop=inv.shop||SHOP();
+  document.getElementById('iprev').innerHTML=`
+  <div style="font-family:Arial,sans-serif;color:#111">
+    <div style="background:linear-gradient(135deg,#ff6b2b,#7c3aed);padding:20px;text-align:center"><div style="font-size:20px;font-weight:900;color:#fff">${shop}</div><div style="font-size:11px;color:rgba(255,255,255,.85);margin-top:3px;letter-spacing:2px">TAX INVOICE</div></div>
+    <div style="display:flex;justify-content:space-between;padding:11px 14px;background:#f9f5ff;border-bottom:1px solid #e8e0f7;font-size:12px"><div><span style="color:#888">Invoice No: </span><strong>${inv.invNo||'INV-001'}</strong></div><div><span style="color:#888">Date: </span><strong>${inv.date||''}</strong></div></div>
+    <div style="padding:13px 14px;background:#f3eeff;border-bottom:1px solid #e8e0f7">
+      <div style="font-size:9px;color:#7c3aed;font-weight:700;letter-spacing:1px;margin-bottom:5px">BILL TO</div>
+      <div style="font-size:16px;font-weight:800;color:#1a0a2e">${inv.name}</div>
+      ${inv.mobile?`<div style="font-size:12px;color:#555;margin-top:3px">&#128241; ${inv.mobile}</div>`:''}
+      ${inv.email?`<div style="font-size:12px;color:#555;margin-top:2px">&#128231; ${inv.email}</div>`:''}
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr style="background:#1a0a2e;color:#fff"><th style="padding:9px 13px;text-align:left">PRODUCT</th><th style="padding:9px 7px;text-align:center">QTY</th><th style="padding:9px 7px;text-align:right">RATE</th><th style="padding:9px 7px;text-align:right">DISC</th><th style="padding:9px 13px;text-align:right">AMOUNT</th></tr>
+      <tr style="background:#faf7ff"><td style="padding:11px 13px;font-weight:600">${inv.product||''}</td><td style="padding:11px 7px;text-align:center">${c.qty}</td><td style="padding:11px 7px;text-align:right">${fmt(c.rate)}</td><td style="padding:11px 7px;text-align:right">${c.disc}%</td><td style="padding:11px 13px;text-align:right;font-weight:700">${fmt(c.sub)}</td></tr>
+    </table>
+    <div style="padding:13px 14px">
+      <div style="max-width:240px;margin-left:auto">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid #f0ebff"><span style="color:#666">Subtotal</span><span>${fmt(c.sub)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid #f0ebff"><span style="color:#e74c3c">Discount (${c.disc}%)</span><span style="color:#e74c3c">- ${fmt(c.dAmt)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid #f0ebff"><span style="color:#666">After Discount</span><span>${fmt(c.after)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:2px solid #ddd"><span style="color:#f59e0b">GST (${c.gst}%)</span><span style="color:#f59e0b">+ ${fmt(c.gAmt)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0 2px;font-size:19px;font-weight:900;color:#ff6b2b"><span>TOTAL</span><span>${fmt(c.total)}</span></div>
+      </div>
+    </div>
+    <div style="display:flex;padding:11px 14px;background:#f0fff6;border-top:1px solid #c6f0da;gap:16px"><div><div style="font-size:10px;color:#888;margin-bottom:2px">PAYMENT</div><div style="font-weight:700">${inv.mode||'Cash'}</div></div><div><div style="font-size:10px;color:#888;margin-bottom:2px">STATUS</div><div style="font-weight:700;color:${inv.status==='Paid'?'#10b981':'#ef4444'}">${inv.status}</div></div></div>
+    <div style="text-align:center;padding:10px;background:#fff8f5;font-size:11px;color:#ff6b2b;font-weight:600">Shukriya aapke business ke liye! &#128591;</div>
+  </div>`;
+  openM('mo-pdf');
+}
+
+function dlPDF(){
+  if(!CI){toast('Invoice select karo');return;}
+  const jl=window.jspdf;
+  if(!jl||!jl.jsPDF){toast('PDF load ho rahi hai, 3 sec baad try karo',3000);return;}
+  const inv=CI,c=calcs(inv),shop=inv.shop||SHOP();
+  const R=n=>'Rs.'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  const doc=new jl.jsPDF({unit:'mm',format:'a4'});
+  const PW=210,ML=14,MR=196,CW=182;
+
+  // HEADER
+  doc.setFillColor(255,107,43);doc.rect(0,0,PW,34,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(18);
+  doc.text(shop,PW/2,13,{align:'center'});
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.text('TAX INVOICE',PW/2,22,{align:'center'});
+  doc.setFontSize(7);doc.text('Thank you for your business!',PW/2,29,{align:'center'});
+
+  // META
+  doc.setTextColor(50,50,50);doc.setFontSize(9);
+  doc.setFont('helvetica','bold');doc.text('Invoice No:',ML,42);
+  doc.setFont('helvetica','normal');doc.text(String(inv.invNo||'INV-001'),ML+22,42);
+  doc.setFont('helvetica','bold');doc.text('Date:',152,42);
+  doc.setFont('helvetica','normal');doc.text(String(inv.date||''),162,42);
+
+  // BILL TO
+  doc.setFillColor(243,238,255);doc.rect(ML,46,CW,26,'F');
+  doc.setFillColor(124,58,237);doc.rect(ML,46,3,26,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(100,50,200);doc.text('BILL TO',ML+5,52);
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(20,10,50);doc.text(String(inv.name||''),ML+5,60);
+  doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(70,70,70);
+  let by=66;
+  if(inv.mobile){doc.text('Mobile: '+inv.mobile,ML+5,by);by+=5;}
+  if(inv.email){doc.text('Email: '+inv.email,ML+5,by);}
+
+  // TABLE HEADER
+  let ty=78;
+  doc.setFillColor(20,10,50);doc.rect(ML,ty,CW,8,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
+  const C={it:ML+3,qt:ML+105,ra:ML+130,dc:ML+152,am:MR-2};
+  doc.text('PRODUCT / ITEM',C.it,ty+5.5);
+  doc.text('QTY',C.qt,ty+5.5,{align:'center'});
+  doc.text('RATE',C.ra,ty+5.5,{align:'center'});
+  doc.text('DISC%',C.dc,ty+5.5,{align:'center'});
+  doc.text('AMOUNT',C.am,ty+5.5,{align:'right'});
+  ty+=8;
+
+  // TABLE ROW
+  doc.setFillColor(251,248,255);doc.rect(ML,ty,CW,11,'F');
+  doc.setTextColor(30,30,30);doc.setFont('helvetica','normal');doc.setFontSize(9);
+  doc.text(String(inv.product||'').substring(0,30),C.it,ty+7.5);
+  doc.text(String(c.qty),C.qt,ty+7.5,{align:'center'});
+  doc.text(R(c.rate),C.ra,ty+7.5,{align:'center'});
+  doc.text(String(c.disc)+'%',C.dc,ty+7.5,{align:'center'});
+  doc.setFont('helvetica','bold');doc.text(R(c.sub),C.am,ty+7.5,{align:'right'});
+  ty+=15;
+
+  // TOTALS
+  doc.setDrawColor(210,195,235);doc.setLineWidth(0.3);doc.line(ML+85,ty-3,MR,ty-3);ty+=3;
+  function TR(lbl,val,r,g,b){
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(90,90,90);
+    doc.text(lbl,MR-58,ty,{align:'right'});
+    doc.setFont('helvetica','bold');
+    if(r!==undefined)doc.setTextColor(r,g,b);else doc.setTextColor(30,30,30);
+    doc.text(val,MR,ty,{align:'right'});ty+=6.5;
+  }
+  TR('Subtotal:',R(c.sub));
+  TR('Discount ('+c.disc+'%):','- '+R(c.dAmt),220,50,50);
+  TR('After Discount:',R(c.after));
+  TR('GST ('+c.gst+'%):','+ '+R(c.gAmt),200,140,0);
+  ty+=2;
+
+  // TOTAL BOX
+  doc.setFillColor(255,107,43);doc.rect(ML+72,ty-5,CW-72,13,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+  doc.text('TOTAL: '+R(c.total),MR-3,ty+4.5,{align:'right'});
+  ty+=17;
+
+  // PAYMENT
+  const hw=CW/2-3;
+  doc.setFillColor(236,255,245);doc.rect(ML,ty,hw,13,'F');
+  doc.setFillColor(255,249,236);doc.rect(ML+hw+6,ty,hw,13,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(80,80,80);
+  doc.text('PAYMENT MODE',ML+3,ty+5);
+  doc.setFontSize(10);doc.setTextColor(20,100,60);doc.text(String(inv.mode||'Cash'),ML+3,ty+11);
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(80,80,80);
+  doc.text('STATUS',ML+hw+9,ty+5);
+  doc.setFontSize(10);
+  const sc=inv.status==='Paid'?[16,185,129]:[239,68,68];
+  doc.setTextColor(sc[0],sc[1],sc[2]);doc.text(String(inv.status),ML+hw+9,ty+11);
+
+  // FOOTER
+  doc.setFillColor(255,107,43);doc.rect(0,279,PW,18,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+  doc.text('Shukriya aapke business ke liye!',PW/2,287,{align:'center'});
+  doc.setFontSize(7.5);doc.text('Shop CRM Pro | '+new Date().toLocaleDateString('en-IN'),PW/2,293,{align:'center'});
+
+  const fname=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.pdf';
+  doc.save(fname);toast('PDF download: '+fname);
+}
+
+function sendIWA(){if(CI)iWA(CI);}
+function sendIEM(){if(CI)iEM(CI);}
+
+function iWA(inv){
+  const c=calcs(inv);
+  const msg='🧾 *Invoice - '+( inv.shop||SHOP())+'*\n\nNamaste *'+inv.name+'* Ji!\n\n📦 *'+inv.product+'*\nQty: '+c.qty+' x '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\n*TOTAL: '+fmt(c.total)+'*\n\n💳 '+( inv.mode||'Cash')+' | '+inv.status+'\nInvoice: '+(inv.invNo||'')+'\n\nShukriya! 🙏';
+  const mob=(inv.mobile||'').replace(/\D/g,'');
+  if(mob)window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
+  else{navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));}
+}
+function iEM(inv){
+  const c=calcs(inv);
+  const subj='Invoice '+(inv.invNo||'')+' - '+inv.product+' - '+(inv.shop||SHOP());
+  const body='Namaste '+inv.name+' Ji!\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: '+fmt(c.sub)+'\nDiscount: -'+fmt(c.dAmt)+'\nAfter Discount: '+fmt(c.after)+'\nGST Amount: +'+fmt(c.gAmt)+'\n\nTOTAL: '+fmt(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team';
+  openMailLink(inv.email||'',subj,body);
+}
+
+// ════════ WA / EMAIL ════════
+function openWAM(c){CC=c;updWA();openM('mo-wa');}
+function updWA(){
+  const t=document.getElementById('wt').value;
+  const d=document.getElementById('wdisc').value||'15';
+  document.getElementById('wprev').textContent=buildWA(Object.assign({},CC,{disc:d}),t);
+}
+function sendWA(){
+  const msg=document.getElementById('wprev').textContent;
+  const mob=(CC&&CC.mobile||'').replace(/\D/g,'');
+  if(mob)window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
+  else{navigator.clipboard.writeText(msg).then(()=>toast('📋 Copy hua!'));}
+}
+function openEMM(c){CC=c;updEM();openM('mo-em');}
+function updEM(){
+  const t=document.getElementById('et').value;
+  document.getElementById('esubj').value=buildESubj(CC||{},t);
+  document.getElementById('eprev').textContent=buildEBody(CC||{},t);
+}
+function openEApp(){
+  const subj=document.getElementById('esubj').value;
+  const body=document.getElementById('eprev').textContent;
+  const email=(CC&&CC.email)||'';
+  openMailLink(email,subj,body);
+}
+function openMailLink(email,subj,body){
+  const url='mailto:'+email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+  const a=document.createElement('a');a.href=url;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  if(!email){
+    setTimeout(()=>window.open('https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank'),600);
+    toast('Gmail khul raha hai...');
+  } else toast('Email app khul raha hai...');
+}
+function copyEl(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>toast('📋 Copy ho gaya!'));}
+
+// ════════ BULK SEND ════════
+function rSend(){
+  const all=[...L,...F].filter((c,i,a)=>a.findIndex(x=>x.mobile===c.mobile)===i&&c.mobile);
+  const sent=all.filter(c=>c.sent).length;
+  document.getElementById('bstot').textContent=all.length;
+  document.getElementById('bssent').textContent=sent;
+  document.getElementById('bspend').textContent=all.length-sent;
+  const pct=all.length?Math.round(sent/all.length*100):0;
+  document.getElementById('bsprog').style.width=pct+'%';
+  const bl=document.getElementById('bklist');
+  bl.innerHTML=all.length?all.map(c=>`<div class="ai" style="opacity:${c.sent?.6:1}"><div class="av" style="background:${avc(c.name)}">${ini(c.name)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${c.name} ${c.sent?'✅':''}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">📱 ${c.mobile}${c.email?' • 📧 '+c.email:''}</div></div><div class="acts"><button class="ab2 awa" onclick="qWA(${EJ(c)})">💬</button>${c.email?`<button class="ab2 aem" onclick="qEM(${EJ(c)})">📧</button>`:''}</div></div>`).join(''):'<div class="emp"><div class="eico">📋</div><div class="et">Koi Contact Nahi</div><div class="es">Leads mein customers add karo</div></div>';
+}
+
+function bulkSend(type){
+  const all=[...L,...F].filter((c,i,a)=>a.findIndex(x=>x.mobile===c.mobile)===i&&c.mobile&&!c.sent);
+  if(!all.length){toast('Sab already bhej diye!');return;}
+  const lbl=type==='both'?'WhatsApp + Email':type==='wa'?'WhatsApp':'Email';
+  if(!confirm(all.length+' customers ko '+lbl+' bhejein?\n\nHar ek 2 sec baad khulega.'))return;
+  let done=0;
+  function next(i){
+    if(i>=all.length){sv();rSend();toast(done+' contacts ko bheja!',3000);return;}
+    const c=all[i];let opened=false;
+    if((type==='both'||type==='wa')&&c.mobile){window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');opened=true;}
+    if((type==='both'||type==='email')&&c.email){const a=document.createElement('a');a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));document.body.appendChild(a);a.click();document.body.removeChild(a);opened=true;}
+    if(opened){L=L.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);F=F.map(x=>x.mobile===c.mobile?Object.assign({},x,{sent:true}):x);done++;sv();const el=document.getElementById('bssent');if(el)el.textContent=done;}
+    setTimeout(()=>next(i+1),2000);
+  }
+  toast('Bhejne shuru... '+all.length+' contacts',2000);next(0);
+}
+function resetBulk(){if(!confirm('Sab dubara pending karo?'))return;L=L.map(x=>Object.assign({},x,{sent:false}));F=F.map(x=>Object.assign({},x,{sent:false}));sv();rSend();toast('Reset ho gaya!');}
+function qWA(c){window.open('https://wa.me/91'+c.mobile+'?text='+encodeURIComponent(buildWA(c,'offer')),'_blank');}
+function qEM(c){const a=document.createElement('a');a.href='mailto:'+c.email+'?subject='+encodeURIComponent(buildESubj(c,'offer'))+'&body='+encodeURIComponent(buildEBody(c,'offer'));document.body.appendChild(a);a.click();document.body.removeChild(a);}
+
+// ════════ MSG TEMPLATES ════════
+function buildWA(c,t){
+  const n=c.name||'Customer',p=c.product||'product',d=c.disc||'15',sh=SHOP();
+  const m={
+    offer:'🙏 Namaste '+n+' Ji!\n\n🏪 *'+sh+'* Special Offer!\n\n📦 *'+p+'*\n💸 *'+d+'% DISCOUNT!*\n⏰ Limited time!\n\nAayein ya call karein!\n🙏',
+    newarr:'👋 Namaste '+n+' Ji!\n\n🆕 *New Stock!*\n\n📦 *'+p+'* available!\n✨ Best quality, best price!\n\n🏪 *'+sh+'*\nAapka swagat hai! 🙏',
+    thanks:'💚 Shukriya '+n+' Ji!\n\n'+sh+' se shopping ki — bahut khushi hui! 😊\n📦 *'+p+'* pasand aaya hoga!\n\nDobara zaroor aayein! 🙏',
+    followup:'🙏 Namaste '+n+' Ji!\n\n*'+sh+'* se baat kar rahe hain.\n\n📦 *'+p+'* ke baare mein interested hain?\n\nBest deal milegi! 📞 Call karein.',
+    bday:'🎂 Happy Birthday '+n+' Ji! 🎉\n\n*'+sh+'* ki taraf se!\n\n🎁 Birthday Special: *'+p+'* par *'+d+'% OFF!*\nAayein aur gift lekar jaayein! 🙏',
+    fest:'🎊 Festival Mubarak '+n+' Ji!\n\n🏪 *'+sh+'* Festival SALE!\n📦 *'+p+'* par '+d+'% CHHUTT!\n\nTyohaar ki shubhkaamnaayein! 🙏'
+  };return m[t]||m.offer;
+}
+function buildESubj(c,t){
+  const sh=SHOP();
+  const s={offer:'Special Offer: '+(c.product||'')+'- '+sh,newarr:'New Arrival: '+(c.product||''),thanks:'Shukriya '+(c.name||'')+'Ji!',followup:'Follow-up: '+(c.product||''),bday:'Happy Birthday '+(c.name||'')+'Ji!',fest:'Festival Sale - '+sh};
+  return s[t]||s.offer;
+}
+function buildEBody(c,t){
+  const n=c.name||'Customer',p=c.product||'product',d=c.disc||'15',sh=SHOP();
+  const b={
+    offer:'Namaste '+n+' Ji!\n\n'+sh+' ki taraf se Special Offer!\n\nProduct: '+p+'\nDiscount: '+d+'% OFF\n\nAaj hi sampark karein!\n\nDhanyavaad,\n'+sh+' Team',
+    newarr:'Namaste '+n+' Ji!\n\n'+p+' ab hamare yahan available hai!\nBest quality, reasonable price.\n\nAayein aur dekhe!\n\n'+sh,
+    thanks:'Shukriya '+n+' Ji!\n\n'+sh+' se '+p+' kharida.\nUmeed hai aapko pasand aaya.\n\nDobara zaroor aayein!\n\n'+sh,
+    followup:'Namaste '+n+' Ji!\n\nAapne '+p+' ke baare mein enquiry ki thi.\nKya abhi bhi interested hain?\n\n'+sh+' Team',
+    bday:'Happy Birthday '+n+' Ji!\n\n'+sh+' ki taraf se!\nBirthday Special: '+p+' par '+d+'% OFF!\n\n'+sh,
+    fest:'Festival Mubarak '+n+' Ji!\n\n'+sh+' Festival Sale!\n'+p+' par '+d+'% chhutt!\n\n'+sh+' Team'
+  };return b[t]||b.offer;
+}
+
+// ════════ OFFER CARD ════════
+function updOC(){
+  const sh=document.getElementById('ocsh').value||'Aapki Shop';
+  const pr=document.getElementById('ocpr').value||'Product';
+  const mr=Number(document.getElementById('ocmr').value)||0;
+  const op=Number(document.getElementById('ocop').value)||0;
+  const dc=document.getElementById('ocdc').value||'0';
+  const co=document.getElementById('occo').value||'—';
+  const vl=document.getElementById('ocvl').value||'—';
+  document.getElementById('ocp-sh').textContent=sh;
+  document.getElementById('ocp-pr').textContent=pr;
+  document.getElementById('ocp-mr').textContent=fmt(mr);
+  document.getElementById('ocp-op').textContent=fmt(op);
+  document.getElementById('ocp-dc').textContent=dc+'% OFF';
+  document.getElementById('ocp-sv').textContent='🎉 Bachate: '+fmt(mr-op);
+  document.getElementById('ocp-co').textContent=co;
+  document.getElementById('ocp-vl').textContent='Valid Till: '+vl;
+}
+
+// ════════ ADMIN ════════
+let pEditId=null;
+function rAdmin(){
+  const ul=document.getElementById('ulist');
+  ul.innerHTML=U.length?U.map(u=>`<div class="ui"><div class="av" style="background:${avc(u.name)};width:36px;height:36px;font-size:13px">${ini(u.name)}</div><div style="flex:1"><div style="font-weight:600;font-size:14px">${u.name}${u.id===CU?.id?' (Aap)':''}</div><div style="font-size:11px;color:var(--text2)">${u.email} • <strong>${u.role}</strong></div></div><div class="acts"><button class="ab2 aed" onclick="editPerms('${u.id}')">🔐</button>${u.id!==CU?.id?`<button class="ab2 adl" onclick="remUser('${u.id}')">🗑️</button>`:''}</div></div>`).join(''):'<div style="color:var(--text2);font-size:13px;text-align:center;padding:16px">Koi user nahi</div>';
+}
+function addUser(){
+  const name=document.getElementById('nun').value.trim();
+  const email=document.getElementById('nue').value.trim();
+  const role=document.getElementById('nur').value;
+  if(!name||!email){toast('❌ Naam aur email zaroori!');return;}
+  if(U.find(x=>x.email===email)){toast('❌ Email already exists!');return;}
+  U.push(mkU(name,email,role,'email'));sv();rAdmin();toast('✅ User added!');
+  document.getElementById('nun').value='';document.getElementById('nue').value='';
+}
+function remUser(id){if(!confirm('User delete karo?'))return;U=U.filter(x=>x.id!==id);sv();rAdmin();toast('🗑️ Removed');}
+function editPerms(id){
+  pEditId=id;const u=U.find(x=>x.id===id);if(!u)return;
+  document.getElementById('puname').textContent=u.name;
+  document.getElementById('ppanel').style.display='block';
+  const perms=[['leads','👥 Leads'],['pipeline','💼 Pipeline'],['followup','🔔 Follow-up'],['invoice','🧾 Invoice'],['send','🚀 Send'],['admin','⚙️ Admin']];
+  document.getElementById('pgrid').innerHTML=perms.map(([k,lbl])=>`<div class="pi"><input type="checkbox" id="p-${k}" ${u.permissions&&u.permissions[k]?'checked':''}><label class="fl" for="p-${k}" style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500">${lbl}</label></div>`).join('');
+  document.getElementById('ppanel').scrollIntoView({behavior:'smooth'});
+}
+function savePerms(){
+  const u=U.find(x=>x.id===pEditId);if(!u)return;
+  ['leads','pipeline','followup','invoice','send','admin'].forEach(k=>{u.permissions=u.permissions||{};u.permissions[k]=document.getElementById('p-'+k)?.checked||false;});
+  sv();toast('✅ Permissions saved!');document.getElementById('ppanel').style.display='none';rAdmin();
+}
+
+// ════════ NOTIFY ════════
+function updN(){
+  const n=F.filter(f=>f.status==='Pending'&&f.date<=tod()).length;
+  const b=document.getElementById('fubdg');
+  if(b){b.textContent=n>9?'9+':n;b.style.display=n?'flex':'none';}
+}
+
+// SW
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/shopcrm/sw.js').catch(()=>{}));}
 </script>
-
-
 </body>
-
 </html>
