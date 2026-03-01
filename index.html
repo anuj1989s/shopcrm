@@ -957,43 +957,17 @@ function iEM(inv){
   const c=calcs(inv);
   const N=n=>Number(n||0).toLocaleString('en-IN');
   const subj='Invoice '+(inv.invNo||'')+' - '+(inv.shop||SHOP());
-  const body='Namaste '+inv.name+' Ji,
-
-Aapka invoice details:
-
-Invoice No: '+(inv.invNo||'')+'
-Date: '+(inv.date||'')+'
-Shop: '+(inv.shop||SHOP())+'
-
-Product: '+inv.product+'
-Qty: '+c.qty+'
-Rate: Rs.'+N(c.rate)+'
-
-Subtotal: Rs.'+N(c.sub)+'
-Discount ('+c.disc+'%): -Rs.'+N(c.dAmt)+'
-After Discount: Rs.'+N(c.after)+'
-GST ('+c.gst+'%): +Rs.'+N(c.gAmt)+'
-
-TOTAL: Rs.'+N(c.total)+'
-
-Payment: '+(inv.mode||'Cash')+'
-Status: '+inv.status+'
-
-Shukriya aapke business ke liye!
-'+(inv.shop||SHOP())+' Team';
+  const body='Namaste '+inv.name+' Ji,\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: Rs.'+N(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: Rs.'+N(c.sub)+'\nDiscount: -Rs.'+N(c.dAmt)+'\nAfter Discount: Rs.'+N(c.aftr||c.after)+'\nGST: +Rs.'+N(c.gAmt)+'\n\nTOTAL: Rs.'+N(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team';
   if(inv.email){
     const a=document.createElement('a');
     a.href='mailto:'+inv.email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
     document.body.appendChild(a);a.click();document.body.removeChild(a);
     toast('Email app khul raha hai...');
   } else {
-    navigator.clipboard.writeText('Subject: '+subj+'
-
-'+body).then(()=>toast('Email copy hua! Gmail mein paste karo.'));
-    setTimeout(()=>window.open('https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank'),300);
+    window.open('https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank');
+    toast('Gmail khul raha hai...');
   }
 }
-
 // ════════ WA / EMAIL ════════
 function openWAM(c){CC=c;updWA();openM('mo-wa');}
 function updWA(){
