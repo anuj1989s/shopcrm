@@ -900,12 +900,18 @@ async function genPDF(inv) {
   TR('GST ('+c.gst+'%):','+ '+R(c.gAmt),200,140,0);
   ty+=2;
 
-  // TOTAL BOX (FIXED: Wider and better aligned)
-  doc.setFillColor(255,107,43);doc.rect(ML,ty-5,CW,13,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
-  doc.text('GRAND TOTAL:',ML+5,ty+4.5);
-  doc.text(R(c.total),MR-18,ty+4.5,{align:'right'});
-  ty+=17;
+  // TOTAL BOX (FIXED WIDTH + SAFE MARGIN)
+doc.setFillColor(255,107,43);
+doc.rect(ML,ty-5,CW,14,'F');   // height थोड़ा बढ़ाया
+
+doc.setTextColor(255,255,255);
+doc.setFont('helvetica','bold');
+doc.setFontSize(13);
+
+doc.text('GRAND TOTAL:',ML+6,ty+5);
+
+// RIGHT SIDE SAFE POSITION
+doc.text(R(c.total),ML+CW-8,ty+5,{align:'right'});
 
   // PAYMENT
   const hw=CW/2-3;
