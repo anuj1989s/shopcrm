@@ -831,11 +831,10 @@ function showPDF(inv){
   openM('mo-pdf');
 }
 
-function dlPDF(){
-  if(!CI){toast('Invoice select karo');return;}
+async function genPDF(inv) {
   const jl=window.jspdf;
-  if(!jl||!jl.jsPDF){toast('PDF load ho rahi hai, 3 sec baad try karo',3000);return;}
-  const inv=CI,c=calcs(inv),shop=inv.shop||SHOP();
+  if(!jl||!jl.jsPDF) return null;
+  const c=calcs(inv), shop=inv.shop||SHOP();
   const R=n=>'Rs.'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
   const doc=new jl.jsPDF({unit:'mm',format:'a4'});
   const PW=210,ML=14,MR=196,CW=182;
@@ -901,10 +900,11 @@ function dlPDF(){
   TR('GST ('+c.gst+'%):','+ '+R(c.gAmt),200,140,0);
   ty+=2;
 
-  // TOTAL BOX
-  doc.setFillColor(255,107,43);doc.rect(ML+50,ty-5,CW-50,13,'F');
+  // TOTAL BOX (FIXED: Wider and better aligned)
+  doc.setFillColor(255,107,43);doc.rect(ML,ty-5,CW,13,'F');
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
-  doc.text('TOTAL: '+R(c.total),MR-5,ty+4.5,{align:'right'});
+  doc.text('GRAND TOTAL:',ML+5,ty+4.5);
+  doc.text(R(c.total),MR-5,ty+4.5,{align:'right'});
   ty+=17;
 
   // PAYMENT
@@ -926,7 +926,14 @@ function dlPDF(){
   doc.text('Shukriya aapke business ke liye!',PW/2,287,{align:'center'});
   doc.setFontSize(7.5);doc.text('Shop CRM Pro | '+new Date().toLocaleDateString('en-IN'),PW/2,293,{align:'center'});
 
-  const fname=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.pdf';
+  return doc;
+}
+
+async function dlPDF(){
+  if(!CI){toast('Invoice select karo');return;}
+  const doc = await genPDF(CI);
+  if(!doc) {toast('PDF load ho rahi hai...'); return;}
+  const fname=(CI.invNo||'INV')+'_'+String(CI.name).replace(/\s+/g,'_')+'.pdf';
   doc.save(fname);toast('PDF download: '+fname);
 }
 
@@ -938,35 +945,46 @@ async function iWA(inv){
   const msg='🧾 *Invoice - '+( inv.shop||SHOP())+'*\n\nNamaste *'+inv.name+'* Ji!\n\n📦 *'+inv.product+'*\nQty: '+c.qty+' x '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\n*TOTAL: '+fmt(c.total)+'*\n\n💳 '+( inv.mode||'Cash')+' | '+inv.status+'\nInvoice: '+(inv.invNo||'')+'\n\nShukriya! 🙏';
   const mob=(inv.mobile||'').replace(/\D/g,'');
   
-  if(navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+  if(navigator.canShare && navigator.share) {
     try {
-      const jl=window.jspdf;
-      const R=n=>'Rs.'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
-      const doc=new jl.jsPDF({unit:'mm',format:'a4'});
-      // Re-run PDF generation logic to get the blob (simplified here for brevity)
-      // For a production app, you'd refactor dlPDF to return a blob.
-      // But for this fix, we'll trigger download AND open WhatsApp.
-      dlPDF();
-      toast('Opening Share Menu... Select WhatsApp.', 3000);
-      await navigator.share({title: 'Invoice', text: msg});
-    } catch(e) {}
-  } else {
-    if(mob) window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
-    else navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));
+      const doc = await genPDF(inv);
+      const blob = doc.output('blob');
+      const fname=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.pdf';
+      const file = new File([blob], fname, { type: 'application/pdf' });
+      
+      if(navigator.canShare({ files: [file] })) {
+        toast('Sharing Invoice PDF... Select WhatsApp.', 3000);
+        await navigator.share({ files: [file], title: 'Invoice', text: msg });
+        return;
+      }
+    } catch(e) { console.error(e); }
   }
+  
+  if(mob) window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
+  else navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));
 }
+
 async function iEM(inv){
   const c=calcs(inv);
   const subj='Invoice '+(inv.invNo||'')+' - '+inv.product+' - '+(inv.shop||SHOP());
   const body='Namaste '+inv.name+' Ji!\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: '+fmt(c.sub)+'\nDiscount: -'+fmt(c.dAmt)+'\nAfter Discount: '+fmt(c.after)+'\nGST Amount: +'+fmt(c.gAmt)+'\n\nTOTAL: '+fmt(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team';
   
-  if(navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
-    dlPDF();
-    toast('Opening Share Menu... Select Email.', 3000);
-    try { await navigator.share({title: subj, text: body}); } catch(e) {}
-  } else {
-    openMailLink(inv.email||'',subj,body);
+  if(navigator.canShare && navigator.share) {
+    try {
+      const doc = await genPDF(inv);
+      const blob = doc.output('blob');
+      const fname=(inv.invNo||'INV')+'_'+String(inv.name).replace(/\s+/g,'_')+'.pdf';
+      const file = new File([blob], fname, { type: 'application/pdf' });
+      
+      if(navigator.canShare({ files: [file] })) {
+        toast('Sharing Invoice PDF... Select Email.', 3000);
+        await navigator.share({ files: [file], title: subj, text: body });
+        return;
+      }
+    } catch(e) { console.error(e); }
   }
+  
+  openMailLink(inv.email||'',subj,body);
 }
 
 // ════════ WA / EMAIL ════════
