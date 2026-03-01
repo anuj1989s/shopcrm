@@ -1566,11 +1566,13 @@ function downloadInvPDF(){
   ty += 2;
 
   // GRAND TOTAL BOX - full width, centered, no cutoff
-  doc.setFillColor(255,107,43);
-  doc.rect(0, ty-5, PW, 15, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(15);
-  doc.text('TOTAL: ' + R(total), PW/2, ty+5.5, {align:'center'});
-  ty += 20;
+  doc.setFillColor(255,102,0);
+doc.rect(120, ty-6, 80, 10, "F");
+
+doc.setTextColor(255,255,255);
+doc.setFontSize(12);
+
+doc.text("TOTAL : Rs." + R(c.total), 195, ty, {align:'right'});
 
   // ── PAYMENT INFO ──
   doc.setFillColor(236,255,245);
