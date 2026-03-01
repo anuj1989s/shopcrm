@@ -842,7 +842,7 @@ function dlPDF(){
   const jl=window.jspdf;
   if(!jl||!jl.jsPDF){toast('PDF load ho rahi hai, 3 sec baad try karo',3000);return;}
   const inv=CI,c=calcs(inv),shop=inv.shop||SHOP();
-  const R=n=>'Rs.'+Number(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  const R=n=>'INR '+Number(n||0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
   const doc=new jl.jsPDF({unit:'mm',format:'a4'});
   const PW=210,ML=14,MR=196,CW=182;
 
@@ -907,12 +907,14 @@ function dlPDF(){
   TR('GST ('+c.gst+'%):','+ '+R(c.gAmt),200,140,0);
   ty+=2;
 
-  // TOTAL BOX — full width guaranteed, no cutoff
-  doc.setFillColor(255,107,43);doc.rect(0,ty-5,PW,15,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
-  doc.text('TOTAL AMOUNT PAYABLE',PW/2,ty+2,{align:'center'});
-  doc.setFontSize(15);
-  doc.text(R(c.total),PW/2,ty+10,{align:'center'});
+  // TOTAL BOX — full width, centered, large font, NO rupee symbol
+  const totalStr='TOTAL: INR '+Number(c.total||0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  doc.setFillColor(255,107,43);
+  doc.rect(0,ty-5,PW,16,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.text(totalStr,PW/2,ty+6,{align:'center'});
   ty+=22;
 
   // PAYMENT
@@ -943,16 +945,57 @@ function sendIEM(){if(CI)iEM(CI);}
 
 function iWA(inv){
   const c=calcs(inv);
-  const msg='🧾 *Invoice - '+( inv.shop||SHOP())+'*\n\nNamaste *'+inv.name+'* Ji!\n\n📦 *'+inv.product+'*\nQty: '+c.qty+' x '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\n*TOTAL: '+fmt(c.total)+'*\n\n💳 '+( inv.mode||'Cash')+' | '+inv.status+'\nInvoice: '+(inv.invNo||'')+'\n\nShukriya! 🙏';
+  // Use plain numbers — no ₹ symbol in WA URL (causes encoding issues)
+  const N=n=>Number(n||0).toLocaleString('en-IN');
+  const msg='Invoice - '+(inv.shop||SHOP())+'\n\nNameaste '+inv.name+' Ji!\n\nProduct: '+inv.product+'\nQty: '+c.qty+' x Rs.'+N(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: Rs.'+N(c.sub)+'\nDiscount: -Rs.'+N(c.dAmt)+'\nGST: +Rs.'+N(c.gAmt)+'\nTOTAL: Rs.'+N(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\nInvoice No: '+(inv.invNo||'')+'\n\nShukriya!';
   const mob=(inv.mobile||'').replace(/\D/g,'');
-  if(mob)window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
-  else{navigator.clipboard.writeText(msg).then(()=>toast('📋 WA message copy hua!'));}
+  if(mob){
+    const url='https://wa.me/91'+mob+'?text='+encodeURIComponent(msg);
+    window.open(url,'_blank');
+    toast('WhatsApp khul raha hai...');
+  } else {
+    navigator.clipboard.writeText(msg).then(()=>toast('Number nahi hai — message copy hua!'));
+  }
 }
 function iEM(inv){
   const c=calcs(inv);
-  const subj='Invoice '+(inv.invNo||'')+' - '+inv.product+' - '+(inv.shop||SHOP());
-  const body='Namaste '+inv.name+' Ji!\n\nAapka invoice:\n\nInvoice No: '+(inv.invNo||'')+'\nDate: '+(inv.date||'')+'\n\nProduct: '+inv.product+'\nQty: '+c.qty+'\nRate: '+fmt(c.rate)+'\nDiscount: '+c.disc+'%\nGST: '+c.gst+'%\n\nSubtotal: '+fmt(c.sub)+'\nDiscount: -'+fmt(c.dAmt)+'\nAfter Discount: '+fmt(c.after)+'\nGST Amount: +'+fmt(c.gAmt)+'\n\nTOTAL: '+fmt(c.total)+'\n\nPayment: '+(inv.mode||'Cash')+'\nStatus: '+inv.status+'\n\nShukriya!\n'+(inv.shop||SHOP())+' Team';
-  openMailLink(inv.email||'',subj,body);
+  const N=n=>Number(n||0).toLocaleString('en-IN');
+  const subj='Invoice '+(inv.invNo||'')+' - '+(inv.shop||SHOP());
+  const body='Namaste '+inv.name+' Ji,
+
+Aapka invoice details:
+
+Invoice No: '+(inv.invNo||'')+'
+Date: '+(inv.date||'')+'
+Shop: '+(inv.shop||SHOP())+'
+
+Product: '+inv.product+'
+Qty: '+c.qty+'
+Rate: Rs.'+N(c.rate)+'
+
+Subtotal: Rs.'+N(c.sub)+'
+Discount ('+c.disc+'%): -Rs.'+N(c.dAmt)+'
+After Discount: Rs.'+N(c.after)+'
+GST ('+c.gst+'%): +Rs.'+N(c.gAmt)+'
+
+TOTAL: Rs.'+N(c.total)+'
+
+Payment: '+(inv.mode||'Cash')+'
+Status: '+inv.status+'
+
+Shukriya aapke business ke liye!
+'+(inv.shop||SHOP())+' Team';
+  if(inv.email){
+    const a=document.createElement('a');
+    a.href='mailto:'+inv.email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    toast('Email app khul raha hai...');
+  } else {
+    navigator.clipboard.writeText('Subject: '+subj+'
+
+'+body).then(()=>toast('Email copy hua! Gmail mein paste karo.'));
+    setTimeout(()=>window.open('https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank'),300);
+  }
 }
 
 // ════════ WA / EMAIL ════════
@@ -981,13 +1024,17 @@ function openEApp(){
   openMailLink(email,subj,body);
 }
 function openMailLink(email,subj,body){
-  const url='mailto:'+email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
-  const a=document.createElement('a');a.href=url;
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  if(!email){
-    setTimeout(()=>window.open('https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body),'_blank'),600);
-    toast('Gmail khul raha hai...');
-  } else toast('Email app khul raha hai...');
+  if(email){
+    const a=document.createElement('a');
+    a.href='mailto:'+email+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+    a.target='_blank';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    toast('Email app khul raha hai...');
+  } else {
+    const gmailUrl='https://mail.google.com/mail/?view=cm&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+    window.open(gmailUrl,'_blank');
+    toast('Gmail khul raha hai — To mein email daalo');
+  }
 }
 function copyEl(id){navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>toast('📋 Copy ho gaya!'));}
 
